@@ -27,13 +27,16 @@ public class CommandThread extends Thread {
 				case "q":
 					finished.set(true);
 					System.out.println("Quitting...");
+					router.close();
 					break;
 				case "seer":
 					router.getTable().seer();
 					break;
 				case "help":
+					System.out.println("-------========== H E L P ==================-------");
 					System.out.println("q - quit");
 					System.out.println("seer - See routing table");
+					System.out.println("-------=====================================-------");
 					break;
 				default:
 					System.out.println("Unknown command");
@@ -41,4 +44,8 @@ public class CommandThread extends Thread {
 			}
 		}
 	}
+	
+	public boolean isFinished() {
+		return finished.get();
+	} 
 }

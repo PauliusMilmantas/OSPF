@@ -99,6 +99,10 @@ public class Table {
 		return neighbours;
 	}
 	
+	public int getPort(String RID) {
+		return ports.get(RIDs.indexOf(RID));
+	}
+	
 	public int getPort() {
 		return port;
 	}
@@ -115,6 +119,10 @@ public class Table {
 		RID = rID;
 	}
 
+	public String getIp(String RID) {
+		return ipList.get(RIDs.indexOf(RID));
+	}
+	
 	public String getIp() {
 		return ip;
 	}
