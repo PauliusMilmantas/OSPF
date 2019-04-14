@@ -32,10 +32,17 @@ public class CommandThread extends Thread {
 				case "seer":
 					router.getTable().seer();
 					break;
+				case "test":
+					router.server.connect();
+				break;
+				case "status":
+					router.connectionTable.status();
+				break;
 				case "help":
 					System.out.println("-------========== H E L P ==================-------");
 					System.out.println("q - quit");
 					System.out.println("seer - See routing table");
+					System.out.println("status - Show status for all neighbours");
 					System.out.println("-------=====================================-------");
 					break;
 				default:

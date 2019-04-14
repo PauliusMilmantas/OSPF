@@ -2,10 +2,10 @@ public class Router {
 
 	public static final boolean DEBUG = true;
 	
-	private RouterClient client;
-	private RouterServer server;
+	public RouterClient client;
+	public RouterServer server;
 	
-	private ConnectionTable connectionTable;
+	public ConnectionTable connectionTable;
 	private Table table;
 	
 	public int port;

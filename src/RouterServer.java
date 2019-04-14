@@ -1,4 +1,5 @@
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class RouterServer extends Thread {
 
@@ -11,6 +12,17 @@ public class RouterServer extends Thread {
 	}
 	
 	public void run() {
+		
+	}
+	
+	/**
+	 * Updates sockets for all neighbours
+	 */
+	public void connect() {
+		System.out.println("Updatating...");//=====
+		
+		ArrayList<Client> list = connectionTable.getClients();
+		
 		
 	}
 }
