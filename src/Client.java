@@ -5,6 +5,7 @@ public class Client {
 	private String RID;
 	private String ip;
 	private int port;
+	private InputHandler inputHandler;
 	private Socket socket;
 	//private TimeStamp lastUpdate;
 	/**
@@ -50,7 +51,31 @@ public class Client {
 		return connectionStatus;
 	}
 
+	public Socket getSocket() {
+		return socket;
+	}
+	
+	public void setSocket(Socket socket) {
+		this.socket = socket;
+	}
+	
 	public void setConnectionStatus(int connectionStatus) {
 		this.connectionStatus = connectionStatus;
+	}
+	
+	public InputHandler getInputHandler() {
+		return inputHandler;
+	}
+	
+	public void setInputHandler(InputHandler inputHandler) {
+		this.inputHandler = inputHandler;
+	}
+	
+	public void close() {
+		try {
+			inputHandler.interrupt();
+		} catch (NullPointerException e) {
+			//Already closed
+		}
 	}
 }

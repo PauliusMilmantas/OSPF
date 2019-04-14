@@ -36,7 +36,9 @@ public class RouterClient extends Thread {
 			try {
 				Socket clientSocket = serverSocket.accept();
 				
-				System.out.println("Connection established!");
+				if(router.DEBUG) System.out.println("Connection established!");
+				new InputHandler(clientSocket, connectionTable);
+				
 			} catch(Exception e) {	//No one tries to join
 				try {
 					Thread.sleep(100);

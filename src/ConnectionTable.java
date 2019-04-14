@@ -3,7 +3,7 @@ import java.util.ArrayList;
 public class ConnectionTable {
 
 	private ArrayList<Client> clients;
-	private Table table;
+	public Table table;
 	
 	public ConnectionTable(Table table) {
 		this.table = table;
@@ -22,11 +22,11 @@ public class ConnectionTable {
 	
 	public void status() {
 		for(int a = 0; a < clients.size(); a++) {
-			System.out.print(clients.get(a).getIp() + clients.get(a).getPort() + "\t" + clients.get(a).getRID() + "\t");
+			System.out.print(clients.get(a).getIp() + ":" + clients.get(a).getPort() + "\t" + clients.get(a).getRID() + "\t");
 			
 			switch(clients.get(a).getConnectionStatus()) {
 				case 0:
-					System.out.println("Offiline");
+					System.out.println("Offline");
 					break;
 				case 1:
 					System.out.println("Online");
@@ -35,6 +35,12 @@ public class ConnectionTable {
 					System.out.println("Undefined");
 					break;
 			}
+		}
+	}
+	
+	public void close() {
+		for(int a = 0; a < clients.size(); a++) {
+			clients.get(a).close();
 		}
 	}
 }

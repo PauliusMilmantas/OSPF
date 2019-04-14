@@ -25,7 +25,7 @@ public class Router {
 		port = Integer.parseInt(args[0].split(":")[1]);
 		
 		//=============================================================================
-		port += 1000;
+		//port += 1000;
 		
 		table = new Table(ip, RID, port);
 		connectionTable = new ConnectionTable(table);
@@ -33,7 +33,7 @@ public class Router {
 		System.out.println("Running router on: " + ip + ":" + port + " as " + RID);
 		
 		client = new RouterClient(this, connectionTable);
-		server = new RouterServer(client, connectionTable);
+		server = new RouterServer(client, connectionTable, this);
 	}
 
 	public void close() {
@@ -46,9 +46,11 @@ public class Router {
 			e.printStackTrace();
 		}
 		*/
-		
+		connectionTable.close();
 		client.interrupt();
 		server.interrupt();
+		
+		
 	}
 	
 	private Router() {
