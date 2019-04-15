@@ -1,3 +1,5 @@
+import java.util.Timer;
+
 public class Router {
 
 	public static final boolean DEBUG = true;
@@ -11,6 +13,8 @@ public class Router {
 	public int port;
 	public String RID;
 	public String ip;
+	
+	private Timer timer;
 	
 	public static void main(String[] args) {
 		//Ip address:port, RID
@@ -34,6 +38,9 @@ public class Router {
 		
 		client = new RouterClient(this);
 		server = new RouterServer(client, connectionTable, this);
+		
+		timer = new Timer();
+		timer.schedule(new HelloThread(this), 3000, 3000);
 	}
 
 	public void close() {
@@ -46,11 +53,11 @@ public class Router {
 			e.printStackTrace();
 		}
 		*/
+		timer.cancel();
+		
 		connectionTable.close();
 		client.interrupt();
-		server.interrupt();
-		
-		
+		server.interrupt();		
 	}
 	
 	private Router() {

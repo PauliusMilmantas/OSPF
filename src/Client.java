@@ -1,4 +1,5 @@
 import java.net.Socket;
+import java.sql.Timestamp;
 
 public class Client {
 
@@ -8,7 +9,10 @@ public class Client {
 	private InputHandler inputHandler;
 	private OutputHandler outputHandler;
 	private Socket socket;
-	//private TimeStamp lastUpdate;
+	/**
+	 * Last received 'Hello' message
+	 */
+	private Timestamp lastUpdated;
 	
 	/**
 	 * Shows connection status
@@ -22,6 +26,7 @@ public class Client {
 		this.ip = ip;
 		this.port = port;
 		
+		lastUpdated = new Timestamp(System.currentTimeMillis());
 		connectionStatus = 0;
 	}	
 
@@ -79,6 +84,14 @@ public class Client {
 	
 	public void setInputHandler(InputHandler inputHandler) {
 		this.inputHandler = inputHandler;
+	}
+	
+	public Timestamp getTime() {
+		return lastUpdated;
+	}
+	
+	public void setTime(Timestamp time) {
+		this.lastUpdated = time;
 	}
 	
 	public void close() {

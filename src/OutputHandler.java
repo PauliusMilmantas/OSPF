@@ -10,10 +10,6 @@ public class OutputHandler {
 	Client client;
 	Router router;
 	private BufferedWriter writer;
-	/**
-	 * For running HelloThread
-	 */
-	private Timer timer;
 	
 	public OutputHandler(Router router, Client client) {
 		this.router = router;
@@ -21,8 +17,10 @@ public class OutputHandler {
 		
 		client.setOutputHandler(this);
 		
+		/*
 		timer = new Timer();
 		timer.schedule(new HelloThread(this, client, router), 3000, 3000);
+		*/
 	}
 	
 	public void sendMessage(String message) {
@@ -56,6 +54,6 @@ public class OutputHandler {
 	}
 	
 	public void close() {
-		timer.cancel();
+		
 	}
 }

@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -52,6 +53,7 @@ public class InputHandler extends Thread {
 											client.setConnectionStatus(1);
 											client.setInputHandler(this);
 											client.setSocket(socket);
+											client.setTime(new Timestamp(System.currentTimeMillis()));
 										}
 									}
 								}
