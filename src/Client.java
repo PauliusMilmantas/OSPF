@@ -6,6 +6,7 @@ public class Client {
 	private String ip;
 	private int port;
 	private InputHandler inputHandler;
+	private OutputHandler outputHandler;
 	private Socket socket;
 	//private TimeStamp lastUpdate;
 	/**
@@ -61,6 +62,14 @@ public class Client {
 	
 	public void setConnectionStatus(int connectionStatus) {
 		this.connectionStatus = connectionStatus;
+	}
+	
+	public OutputHandler getOutputHandler() {
+		return outputHandler;
+	}
+	
+	public void setOutputHandler(OutputHandler outputHandler) {
+		this.outputHandler = outputHandler;
 	}
 	
 	public InputHandler getInputHandler() {

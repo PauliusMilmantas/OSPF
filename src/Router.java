@@ -32,7 +32,7 @@ public class Router {
 		
 		System.out.println("Running router on: " + ip + ":" + port + " as " + RID);
 		
-		client = new RouterClient(this, connectionTable);
+		client = new RouterClient(this);
 		server = new RouterServer(client, connectionTable, this);
 	}
 
@@ -55,8 +55,13 @@ public class Router {
 	
 	private Router() {
 		String[] args = new String[2];
+		/*
 		args[0] = "127.0.0.1:92";
 		args[1] = "192.168.1.2";
+		*/
+		
+		args[0] = "127.0.0.1:93";
+		args[1] = "192.168.1.3";		
 		new Router(args);
 	}
 	

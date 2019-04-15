@@ -3,6 +3,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 public class RouterServer extends Thread {
@@ -33,18 +34,33 @@ public class RouterServer extends Thread {
 			if(list.get(a).getConnectionStatus() != 1) {
 				try {
 					Socket ss = new Socket(list.get(a).getIp(), list.get(a).getPort());
+					list.get(a).setSocket(ss);
 					
-					
-					//==================== TO OUTPUTHANDLER
-					BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(ss.getOutputStream()));
-					writer.write("Hello " + router.RID + "\t");
-					writer.close();
-					//=====================
-					
-					list.get(a).setConnectionStatus(1);
+					new OutputHandler(router, list.get(a));
+					list.get(a).getOutputHandler().sendMessage("Hello " + router.RID);
+
 					list.get(a).setSocket(ss);
 				} catch (IOException e) { //Couldn't connect
 					//e.printStackTrace();
+				}
+			} else {
+				if(list.get(a).getOutputHandler() == null) {
+					Socket ss;
+					
+					try {
+						ss = new Socket(list.get(a).getIp(), list.get(a).getPort());
+						
+						list.get(a).setSocket(ss);
+						
+						new OutputHandler(router, list.get(a));
+						list.get(a).getOutputHandler().sendMessage("Hello " + router.RID);	
+					} catch (UnknownHostException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}				
+				} else {
+					list.get(a).getOutputHandler().sendMessage("Hello " + router.RID);
 				}
 			}
 		}

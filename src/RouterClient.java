@@ -13,10 +13,10 @@ public class RouterClient extends Thread {
 	
 	private ServerSocket serverSocket;
 	
-	public RouterClient(Router router, ConnectionTable conenctionTable) {
+	public RouterClient(Router router) {
 		
 		this.router = router;
-		this.connectionTable = connectionTable;
+		this.connectionTable = router.connectionTable;
 		
 		done = new AtomicBoolean(false);
 		
@@ -36,8 +36,7 @@ public class RouterClient extends Thread {
 			try {
 				Socket clientSocket = serverSocket.accept();
 				
-				if(router.DEBUG) System.out.println("Connection established!");
-				new InputHandler(clientSocket, connectionTable);
+				new InputHandler(clientSocket, router);
 				
 			} catch(Exception e) {	//No one tries to join
 				try {

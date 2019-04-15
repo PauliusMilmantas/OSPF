@@ -11,10 +11,12 @@ public class InputHandler extends Thread {
 	private BufferedReader reader;
 	private AtomicBoolean done;
 	private ConnectionTable connectionTable;
+	private Router router;
 	
-	public InputHandler(Socket socket, ConnectionTable connectionTable) {
+	public InputHandler(Socket socket, Router router) {
 		this.socket = socket;
-		this.connectionTable = connectionTable;
+		this.router = router;
+		this.connectionTable = router.connectionTable;
 		
 		done = new AtomicBoolean(false);
 		
@@ -42,13 +44,17 @@ public class InputHandler extends Thread {
 							case "Hello":
 								ArrayList<Client> clients = connectionTable.getClients();
 								
-								/*for(int a = 0; a < clients.size(); a++) {
-									if(clients.get(a).getRID().equals(line.split(" ")[1])) {
-										if(clients.get(a).getConnectionStatus() != 1) {
-											clients.get(a).setConnectionStatus(1);
+								for(int a = 0; a < clients.size(); a++) {
+									Client client = clients.get(a);
+									
+									if(client.getRID().equals(line.split(" ")[1].split("\t")[0])) {
+										if(client.getConnectionStatus() != 1) {
+											client.setConnectionStatus(1);
+											client.setInputHandler(this);
+											client.setSocket(socket);
 										}
 									}
-								}*/
+								}
 								
 								break;
 							default:
