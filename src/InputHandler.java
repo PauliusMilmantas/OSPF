@@ -60,6 +60,11 @@ public class InputHandler extends Thread {
 								}
 								
 								break;
+							case "Table":
+								
+								
+								
+								break;
 							default:
 								System.out.println("Unrecognised command");
 								break;

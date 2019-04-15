@@ -2,7 +2,7 @@ import java.util.Timer;
 
 public class Router {
 
-	public static final boolean DEBUG = true;
+	public static boolean DEBUG = true;
 	
 	public RouterClient client;
 	public RouterServer server;

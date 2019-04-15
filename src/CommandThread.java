@@ -32,17 +32,20 @@ public class CommandThread extends Thread {
 				case "seer":
 					router.getTable().seer();
 					break;
-				case "test":
-					router.server.connect();
-				break;
 				case "status":
 					router.connectionTable.status();
-				break;
+					break;
+				case "d":
+					router.DEBUG = !router.DEBUG;
+					if(router.DEBUG) System.out.println("Debug mode is ON");
+					else System.out.println("Debug mode is OFF");
+					break;
 				case "help":
 					System.out.println("-------========== H E L P ==================-------");
 					System.out.println("q - quit");
 					System.out.println("seer - See routing table");
 					System.out.println("status - Show status for all neighbours");
+					System.out.println("d - Change DEBUG mode");
 					System.out.println("-------=====================================-------");
 					break;
 				default:

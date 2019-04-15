@@ -82,6 +82,22 @@ public class Table {
 		}
 	}
 	
+	public boolean hasRouter(String RID) {
+		if(RIDs.indexOf(RID) != -1) return true;
+		else return false;		
+	}
+	
+	public void removeRouter(String RID) {
+		if(hasRouter(RID)) {
+			int id = RIDs.indexOf(RID);
+			RIDs.remove(id);
+			ipList.remove(id);
+			gateways.remove(id);
+			hops.remove(id);
+			ports.remove(id);
+		}
+	}
+	
 	/**
 	 * Returns a list of neighbours
 	 * @return ArrayList<String> - RID list of neighbours

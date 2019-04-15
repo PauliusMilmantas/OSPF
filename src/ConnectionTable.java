@@ -56,6 +56,20 @@ public class ConnectionTable {
 		}
 	}
 	
+	public void removeRouter(String RID) {	
+		if(table.hasRouter(RID)) {
+			table.removeRouter(RID);
+			
+			for(int a = 0; a < clients.size(); a++) {
+				if(clients.get(a).getRID().equals(RID)) {
+					clients.get(a).close();
+					clients.remove(a);
+					System.out.println(RID + " was removed!");
+				}
+			}
+		}
+	}
+	
 	public void close() {
 		for(int a = 0; a < clients.size(); a++) {
 			clients.get(a).close();
