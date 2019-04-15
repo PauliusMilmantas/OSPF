@@ -1,18 +1,33 @@
 import java.util.ArrayList;
+import java.util.Timer;
 
 public class ConnectionTable {
 
 	private ArrayList<Client> clients;
+	
+	/**
+	 * For TimeoutThread
+	 */
+	private ArrayList<Timer> timers;
 	public Table table;
 	
-	public ConnectionTable(Table table) {
+	private Router router;
+	
+	public ConnectionTable(Table table, Router router) {
 		this.table = table;
+		this.router = router;
 		
 		clients = new ArrayList<>();
+		timers = new ArrayList<>();
 		
 		ArrayList<String> nb = table.getNeighbours();
 		for(int a = 0; a < nb.size(); a++) {
-			clients.add(new Client(nb.get(a), table.getIp(nb.get(a)), table.getPort(nb.get(a))));
+			Client cl = new Client(nb.get(a), table.getIp(nb.get(a)), table.getPort(nb.get(a)));
+			clients.add(cl);
+			
+			Timer t = new Timer();
+			timers.add(t);
+			t.schedule(new TimeoutThread(cl, router), 1000, 1000);
 		}
 	}
 	
@@ -31,6 +46,9 @@ public class ConnectionTable {
 				case 1:
 					System.out.println("Online");
 					break;
+				case 2:
+					System.out.println("Down");
+					break;
 				default:
 					System.out.println("Undefined");
 					break;
@@ -41,6 +59,10 @@ public class ConnectionTable {
 	public void close() {
 		for(int a = 0; a < clients.size(); a++) {
 			clients.get(a).close();
+		}
+		
+		for(int a = 0; a < timers.size(); a++) {
+			timers.get(a).cancel();
 		}
 	}
 }

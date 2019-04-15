@@ -18,6 +18,7 @@ public class Client {
 	 * Shows connection status
 	 * 0 - offline
 	 * 1 - online
+	 * 2 - down
 	 */
 	private int connectionStatus;
 	

@@ -32,7 +32,7 @@ public class Router {
 		//port += 1000;
 		
 		table = new Table(ip, RID, port);
-		connectionTable = new ConnectionTable(table);
+		connectionTable = new ConnectionTable(table, this);
 		
 		System.out.println("Running router on: " + ip + ":" + port + " as " + RID);
 		

@@ -49,11 +49,12 @@ public class InputHandler extends Thread {
 									Client client = clients.get(a);
 									
 									if(client.getRID().equals(line.split(" ")[1].split("\t")[0])) {
+										client.setTime(new Timestamp(System.currentTimeMillis()));
+										
 										if(client.getConnectionStatus() != 1) {
 											client.setConnectionStatus(1);
 											client.setInputHandler(this);
 											client.setSocket(socket);
-											client.setTime(new Timestamp(System.currentTimeMillis()));
 										}
 									}
 								}
