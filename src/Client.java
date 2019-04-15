@@ -9,6 +9,7 @@ public class Client {
 	private OutputHandler outputHandler;
 	private Socket socket;
 	//private TimeStamp lastUpdate;
+	
 	/**
 	 * Shows connection status
 	 * 0 - offline

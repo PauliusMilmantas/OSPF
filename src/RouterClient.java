@@ -35,7 +35,7 @@ public class RouterClient extends Thread {
 		while(commandThread.isFinished() == false && !done.get()) {
 			try {
 				Socket clientSocket = serverSocket.accept();
-				
+
 				new InputHandler(clientSocket, router);
 				
 			} catch(Exception e) {	//No one tries to join

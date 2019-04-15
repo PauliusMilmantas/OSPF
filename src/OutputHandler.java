@@ -3,12 +3,17 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Timer;
 
 public class OutputHandler {
 
 	Client client;
 	Router router;
 	private BufferedWriter writer;
+	/**
+	 * For running HelloThread
+	 */
+	private Timer timer;
 	
 	public OutputHandler(Router router, Client client) {
 		this.router = router;
@@ -16,7 +21,8 @@ public class OutputHandler {
 		
 		client.setOutputHandler(this);
 		
-
+		timer = new Timer();
+		timer.schedule(new HelloThread(this, client, router), 3000, 3000);
 	}
 	
 	public void sendMessage(String message) {
@@ -38,8 +44,18 @@ public class OutputHandler {
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				//Host went offline
+				close();
+				try {
+					client.getSocket().close();
+				} catch (IOException e2) {
+					//Already closed!
+				}
 			}
 		}
+	}
+	
+	public void close() {
+		timer.cancel();
 	}
 }

@@ -26,8 +26,6 @@ public class RouterServer extends Thread {
 	 * Updates sockets for all neighbours
 	 */
 	public void connect() {
-		System.out.println("Updatating...");//=====
-		
 		ArrayList<Client> list = connectionTable.getClients();
 		
 		for(int a = 0; a < list.size(); a++) {
