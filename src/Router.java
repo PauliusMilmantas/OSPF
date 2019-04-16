@@ -40,7 +40,7 @@ public class Router {
 		server = new RouterServer(client, connectionTable, this);
 		
 		timer = new Timer();
-		timer.schedule(new HelloThread(this), 3000, 3000);
+		timer.schedule(new HelloThread(this), 6000, 6000);
 	}
 
 	public void close() {

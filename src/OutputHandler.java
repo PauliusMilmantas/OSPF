@@ -16,11 +16,6 @@ public class OutputHandler {
 		this.client = client;
 		
 		client.setOutputHandler(this);
-		
-		/*
-		timer = new Timer();
-		timer.schedule(new HelloThread(this, client, router), 3000, 3000);
-		*/
 	}
 	
 	public void sendMessage(String message) {

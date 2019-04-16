@@ -13,12 +13,12 @@ public class TimeoutThread extends TimerTask {
 	
 	public void run() {
 		if(client.getConnectionStatus() == 1) {
-			if((System.currentTimeMillis() - client.getTime().getTime())/1000 > 10) {
+			if((System.currentTimeMillis() - client.getTime().getTime())/1000 > 16) {
 				System.out.println(client.getRID() + " went offline.");
 				client.setConnectionStatus(2);
 			}
 		} else if(client.getConnectionStatus() == 2) {
-			if((System.currentTimeMillis() - client.getTime().getTime())/1000 > 20) {
+			if((System.currentTimeMillis() - client.getTime().getTime())/1000 > 25) {
 				
 				ArrayList<Client> clients = router.connectionTable.getClients();
 				

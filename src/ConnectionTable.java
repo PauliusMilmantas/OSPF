@@ -27,7 +27,7 @@ public class ConnectionTable {
 			
 			Timer t = new Timer();
 			timers.add(t);
-			t.schedule(new TimeoutThread(cl, router), 1000, 1000);
+			t.schedule(new TimeoutThread(cl, router), 3000, 3000);
 		}
 	}
 	

@@ -40,7 +40,6 @@ public class InputHandler extends Thread {
 			try {
 				if(reader.ready()) {
 					line = reader.readLine();
-					
 					if(line != null) {
 						if(Router.DEBUG) System.out.println("[IN]" + line);
 						
