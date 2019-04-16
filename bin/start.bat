@@ -1,0 +1,8 @@
+start cmd.exe @cmd /k "java Router 127.0.0.1:90 192.168.1.0"
+start cmd.exe @cmd /k "java Router 127.0.0.1:91 192.168.1.1"
+start cmd.exe @cmd /k "java Router 127.0.0.1:92 192.168.1.2"
+start cmd.exe @cmd /k "java Router 127.0.0.1:93 192.168.1.3"
+start cmd.exe @cmd /k "java Router 127.0.0.1:94 192.168.1.4"
+start cmd.exe @cmd /k "java Router 127.0.0.1:95 192.168.1.5"
+start cmd.exe @cmd /k "java Router 127.0.0.1:96 192.168.1.6"
+start cmd.exe @cmd /k "java Router 127.0.0.1:97 192.168.1.7"
