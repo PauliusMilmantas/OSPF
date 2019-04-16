@@ -14,14 +14,14 @@ public class Table {
 	
 	private ArrayList<String> RIDs;
 	private ArrayList<String> ipList;
-	private ArrayList<String> gateways;
+	private ArrayList<String> nextHop;
 	private ArrayList<Integer> hops;
 	private ArrayList<Integer> ports;
 	private BufferedReader reader;
 	
 	public Table(String ip, String RID, int port) {
 		ipList = new ArrayList<String>();
-		gateways = new ArrayList<String>();
+		nextHop = new ArrayList<String>();
 		hops = new ArrayList<Integer>();
 		ports = new ArrayList<Integer>();
 		RIDs = new ArrayList<>();
@@ -51,7 +51,7 @@ public class Table {
 				ipList.add(rt[0].split(":")[0]);
 				ports.add(Integer.parseInt(rt[0].split(":")[1]));
 				RIDs.add(rt[1]);
-				gateways.add(rt[2]);
+				nextHop.add(rt[2]);
 				hops.add(Integer.parseInt(rt[3]));
 				
 				line = reader.readLine();	
@@ -92,7 +92,7 @@ public class Table {
 			int id = RIDs.indexOf(RID);
 			RIDs.remove(id);
 			ipList.remove(id);
-			gateways.remove(id);
+			nextHop.remove(id);
 			hops.remove(id);
 			ports.remove(id);
 		}

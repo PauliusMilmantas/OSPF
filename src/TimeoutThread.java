@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.TimerTask;
 
 public class TimeoutThread extends TimerTask {
@@ -18,7 +19,17 @@ public class TimeoutThread extends TimerTask {
 			}
 		} else if(client.getConnectionStatus() == 2) {
 			if((System.currentTimeMillis() - client.getTime().getTime())/1000 > 20) {
+				
+				ArrayList<Client> clients = router.connectionTable.getClients();
+				
+				for(int a = 0; a < clients.size(); a++) {
+					if(clients.get(a).getConnectionStatus() == 1) {
+						clients.get(a).getOutputHandler().sendMessage("LSA " + client.getRID() + " 0");
+					}
+				}
+				
 				router.connectionTable.removeRouter(client.getRID());
+				this.cancel();
 			}
 		}
 	}

@@ -60,11 +60,19 @@ public class ConnectionTable {
 		if(table.hasRouter(RID)) {
 			table.removeRouter(RID);
 			
+			//From table
 			for(int a = 0; a < clients.size(); a++) {
 				if(clients.get(a).getRID().equals(RID)) {
 					clients.get(a).close();
 					clients.remove(a);
 					System.out.println(RID + " was removed!");
+				}
+			}
+			
+			//Send LSA messages to others
+			for(int a = 0; a < clients.size(); a++) {
+				if(clients.get(a).getConnectionStatus() == 1) {
+					clients.get(a).getOutputHandler().sendMessage("LSA " + RID + " 0");
 				}
 			}
 		}

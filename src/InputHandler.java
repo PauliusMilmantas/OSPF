@@ -60,10 +60,10 @@ public class InputHandler extends Thread {
 								}
 								
 								break;
-							case "Table":
-								
-								
-								
+							case "LSA":
+									if(line.split(" ")[2].equals("0")) {	//Remove router
+										connectionTable.removeRouter(line.split(" ")[1]);
+									}					
 								break;
 							default:
 								System.out.println("Unrecognised command");
