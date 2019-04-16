@@ -69,10 +69,10 @@ public class ConnectionTable {
 				}
 			}
 			
-			//Send LSA messages to others
+			//Send LSU messages to others
 			for(int a = 0; a < clients.size(); a++) {
 				if(clients.get(a).getConnectionStatus() == 1) {
-					clients.get(a).getOutputHandler().sendMessage("LSA " + RID + " 0");
+					clients.get(a).getOutputHandler().sendMessage("LSU " + RID + " 0");
 				}
 			}
 		}

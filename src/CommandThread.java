@@ -1,5 +1,6 @@
 
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -34,6 +35,31 @@ public class CommandThread extends Thread {
 					break;
 				case "status":
 					router.connectionTable.status();
+					break;
+				case "message":
+					String RID = line.split(" ")[1];
+					String msg = line.substring(RID.length() + 9, line.length());
+					msg = router.RID + ": " + msg;
+					
+					router.client.sendOverNetwork(RID, msg);
+					break;
+				case "s":
+					if(!router.client.messages.isEmpty()) {
+						line = router.client.messages.remove(0);
+						
+						RID = line.split(" ")[1];
+						msg = line.substring(RID.length() + 9, line.length());
+						
+						String nextHop = router.getTable().getNextHop(RID);
+						
+						ArrayList<Client> clientsss = router.connectionTable.getClients();
+						
+						for(int a = 0; a < clientsss.size(); a++) {
+							if(clientsss.get(a).getRID().equals(nextHop)) {
+								clientsss.get(a).getOutputHandler().sendMessage("MESSAGE " + RID + " " + msg);
+							}
+						}
+					}
 					break;
 				case "d":
 					router.DEBUG = !router.DEBUG;

@@ -24,7 +24,7 @@ public class TimeoutThread extends TimerTask {
 				
 				for(int a = 0; a < clients.size(); a++) {
 					if(clients.get(a).getConnectionStatus() == 1) {
-						clients.get(a).getOutputHandler().sendMessage("LSA " + client.getRID() + " 0");
+						clients.get(a).getOutputHandler().sendMessage("LSU " + client.getRID() + " 0");
 					}
 				}
 				

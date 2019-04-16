@@ -14,11 +14,14 @@ public class InputHandler extends Thread {
 	private ConnectionTable connectionTable;
 	private Router router;
 	
+	private ArrayList<String> messages;
+	
 	public InputHandler(Socket socket, Router router) {
 		this.socket = socket;
 		this.router = router;
 		this.connectionTable = router.connectionTable;
 		
+		messages = new ArrayList<>();
 		done = new AtomicBoolean(false);
 		
 		try {
@@ -60,10 +63,37 @@ public class InputHandler extends Thread {
 								}
 								
 								break;
-							case "LSA":
+							case "LSU":	//For remove/adding router to table
 									if(line.split(" ")[2].equals("0")) {	//Remove router
 										connectionTable.removeRouter(line.split(" ")[1]);
 									}					
+								break;
+							case "LSR":
+									
+								break;
+							case "MESSAGE":
+								String RID = line.split(" ")[1];
+								String msg = line.substring(RID.length() + 9, line.length());
+
+								if(RID.equals(router.RID)) {
+									System.out.println(msg);
+								} else {
+									System.out.println("Message received. Press s to forward");
+									
+									router.client.messages.add(line);
+									
+									/*
+									String nextHop = router.getTable().getNextHop(RID);
+									
+									ArrayList<Client> clientsss = connectionTable.getClients();
+									
+									for(int a = 0; a < clientsss.size(); a++) {
+										if(clientsss.get(a).getRID().equals(nextHop)) {
+											clientsss.get(a).getOutputHandler().sendMessage("MESSAGE " + RID + " " + msg);
+										}
+									}
+									*/
+								}
 								break;
 							default:
 								System.out.println("Unrecognised command");

@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RouterClient extends Thread {
@@ -11,6 +12,8 @@ public class RouterClient extends Thread {
 	//private boolean done = false; //For stopping routerClient while
 	private AtomicBoolean done;
 	
+	public ArrayList<String> messages;
+	
 	private ServerSocket serverSocket;
 	
 	public RouterClient(Router router) {
@@ -18,6 +21,7 @@ public class RouterClient extends Thread {
 		this.router = router;
 		this.connectionTable = router.connectionTable;
 		
+		messages = new ArrayList<>();
 		done = new AtomicBoolean(false);
 		
 		commandThread = new CommandThread(router);
@@ -29,6 +33,26 @@ public class RouterClient extends Thread {
 		}
 		
 		start();
+	}
+	
+	public void forwardMessage() {
+		
+	}
+	
+	public void sendOverNetwork(String DestinationRID, String message) {
+		
+		if(router.DEBUG) 
+			System.out.println("[OUT][" + DestinationRID + "] " + message);
+		
+		String nextHop = router.getTable().getNextHop(DestinationRID);
+		
+		ArrayList<Client> clients = connectionTable.getClients();
+		
+		for(int a = 0; a < clients.size(); a++) {
+			if(clients.get(a).getRID().equals(nextHop)) {
+				clients.get(a).getOutputHandler().sendMessage("MESSAGE " + DestinationRID + " " + message);
+			}
+		}
 	}
 	
 	public void run() {

@@ -33,16 +33,16 @@ public class Table {
 		readTable();
 	}
 	
+	public String getNextHop(String DestinationRID) {
+		return nextHop.get(RIDs.indexOf(DestinationRID));
+	}
+	
 	/**
 	 * Reads table text file. RID + '.txt'
 	 */
 	private void readTable() {
 		try {
 			reader = new BufferedReader(new FileReader(new File("Tables/" + RID)));
-			
-			String[] lines = reader.readLine().split(":");
-			port = Integer.parseInt(lines[1]);
-			ip = lines[0];
 			
 			String line = reader.readLine();
 			
@@ -57,14 +57,15 @@ public class Table {
 				line = reader.readLine();	
 			}
 		} catch (FileNotFoundException e) {
-			System.out.println("ERROR: " + RID + " can't find routing table.");
+			if(Router.DEBUG) System.out.println("ERROR: " + RID + " can't find routing table.");
+			if(Router.DEBUG) System.out.println("Using empty routing table");
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
 			try {
 				reader.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				//Using empty routing table
 			}
 		}
 	}
