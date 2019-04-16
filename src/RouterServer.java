@@ -56,7 +56,7 @@ public class RouterServer extends Thread {
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
-						e.printStackTrace();
+						//e.printStackTrace();
 					}				
 				} else {
 					list.get(a).getOutputHandler().sendMessage("Hello " + router.RID);

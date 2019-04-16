@@ -77,14 +77,9 @@ public class RouterClient extends Thread {
 		try {
 			done.set(true);
 			commandThread.interrupt();
-			//commandThread.join();
-		//} catch (InterruptedException e) {
-		//	e.printStackTrace();
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
-		//System.out.println("test");
 		
 		try {
 			serverSocket.close();

@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.Socket;
 import java.sql.Timestamp;
 
@@ -84,7 +85,10 @@ public class Client {
 	}
 	
 	public void setInputHandler(InputHandler inputHandler) {
+		InputHandler hl = this.inputHandler;
 		this.inputHandler = inputHandler;
+		
+		if(hl != null) hl.interrupt();
 	}
 	
 	public Timestamp getTime() {
@@ -97,8 +101,9 @@ public class Client {
 	
 	public void close() {
 		try {
+			socket.close();
 			inputHandler.interrupt();
-		} catch (NullPointerException e) {
+		} catch (NullPointerException | IOException e) {
 			//Already closed
 		}
 	}

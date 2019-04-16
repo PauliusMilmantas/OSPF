@@ -28,9 +28,6 @@ public class Router {
 		RID = args[1];
 		port = Integer.parseInt(args[0].split(":")[1]);
 		
-		//=============================================================================
-		//port += 1000;
-		
 		table = new Table(ip, RID, port);
 		connectionTable = new ConnectionTable(table, this);
 		
@@ -46,13 +43,6 @@ public class Router {
 	public void close() {
 		client.close();
 
-		/*
-		try {
-			client.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		*/
 		timer.cancel();
 		
 		connectionTable.close();
@@ -67,7 +57,7 @@ public class Router {
 		args[1] = "192.168.1.2";
 		*/
 		
-		args[0] = "127.0.0.1:93";
+		args[0] = "127.0.0.1:9993";
 		args[1] = "192.168.1.3";		
 		new Router(args);
 	}

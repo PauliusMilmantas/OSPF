@@ -35,7 +35,7 @@ public class InputHandler extends Thread {
 	
 	public void run() {
 		
-		while(!done.get()) {
+		//while(!done.get()) {
 			String line;
 			try {
 				if(reader.ready()) {
@@ -80,18 +80,6 @@ public class InputHandler extends Thread {
 									System.out.println("Message received. Press s to forward");
 									
 									router.client.messages.add(line);
-									
-									/*
-									String nextHop = router.getTable().getNextHop(RID);
-									
-									ArrayList<Client> clientsss = connectionTable.getClients();
-									
-									for(int a = 0; a < clientsss.size(); a++) {
-										if(clientsss.get(a).getRID().equals(nextHop)) {
-											clientsss.get(a).getOutputHandler().sendMessage("MESSAGE " + RID + " " + msg);
-										}
-									}
-									*/
 								}
 								break;
 							default:
@@ -103,7 +91,7 @@ public class InputHandler extends Thread {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}	
+		//}	
 	}
 	
 	public void close() {

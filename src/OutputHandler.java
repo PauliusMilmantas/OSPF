@@ -18,7 +18,7 @@ public class OutputHandler {
 		client.setOutputHandler(this);
 	}
 	
-	public void sendMessage(String message) {
+	public void sendMessage(String message) {		
 		try {			
 			writer = new BufferedWriter(new OutputStreamWriter(client.getSocket().getOutputStream()));
 			writer.write(message);
@@ -49,6 +49,6 @@ public class OutputHandler {
 	}
 	
 	public void close() {
-		
+
 	}
 }

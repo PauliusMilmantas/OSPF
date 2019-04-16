@@ -11,7 +11,7 @@ public class TimeoutThread extends TimerTask {
 		this.router = router;
 	}
 	
-	public void run() {
+	public void run() {	
 		if(client.getConnectionStatus() == 1) {
 			if((System.currentTimeMillis() - client.getTime().getTime())/1000 > 16) {
 				System.out.println(client.getRID() + " went offline.");
