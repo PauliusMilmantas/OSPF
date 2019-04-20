@@ -29,6 +29,7 @@ public class Router {
 		port = Integer.parseInt(args[0].split(":")[1]);
 		
 		table = new Table(ip, RID, port);
+		table.readTable();
 		connectionTable = new ConnectionTable(table, this);
 		
 		System.out.println("Running router on: " + ip + ":" + port + " as " + RID);

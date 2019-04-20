@@ -33,6 +33,7 @@ public class OutputHandler {
 				
 				writer = new BufferedWriter(new OutputStreamWriter(client.getSocket().getOutputStream()));
 				writer.write(message);
+				writer.flush();
 				writer.close();
 			} catch (UnknownHostException e1) {
 				e1.printStackTrace();

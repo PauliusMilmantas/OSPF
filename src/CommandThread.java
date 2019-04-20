@@ -25,6 +25,11 @@ public class CommandThread extends Thread {
 			line = scanner.nextLine();
 			
 			switch(line.split(" ")[0]) {
+				case "test":
+					//TMP FUNCTION CALL
+					router.client.sendTable(line.split(" ")[1]);	//Issiunsi table
+					
+					break;
 				case "q":
 					finished.set(true);
 					System.out.println("Quitting...");

@@ -55,6 +55,40 @@ public class RouterClient extends Thread {
 		}
 	}
 	
+	public void sendTable(String DestinationRID) {
+		if(router.DEBUG) 
+			System.out.println("[OUT][" + DestinationRID + "] LSU TABLE");
+		
+		//System.out.println("A" + DestinationRID + "A");
+		
+		String nextHop = router.getTable().getNextHop(DestinationRID);
+		
+		ArrayList<Client> clients = connectionTable.getClients();
+		
+		for(int a = 0; a < clients.size(); a++) {
+			if(clients.get(a).getRID().equals(nextHop)) {
+				OutputHandler handler = clients.get(a).getOutputHandler();
+				Table table = router.getTable();
+				
+				handler.sendMessage("LSU TABLE RID: " + table.getRID());
+				handler.sendMessage("LSU TABLE " +  table.getRID() + " IP: " + table.getIp());
+				handler.sendMessage("LSU TABLE " + table.getRID() + " PORT: " + table.getPort());
+				
+				ArrayList<String> RIDs = table.getRIDs();
+				ArrayList<String> ipList = table.getIpList();
+				ArrayList<String> nextHops = table.getNextHops();
+				ArrayList<Integer> hops = table.getHops();
+				ArrayList<Integer> ports = table.getPorts();
+				
+				for(int b = 0; b < RIDs.size(); b++) {
+					handler.sendMessage("LSU TABLE " + table.getRID() + " " + ipList.get(b) + ":" + ports.get(b) + " " + RIDs.get(b) + " " + nextHops.get(b) + " " + hops.get(b));
+				}
+				
+				handler.sendMessage("LSU ENDTABLE " + table.getRID());
+			}
+		}
+	}
+	
 	public void run() {
 		while(commandThread.isFinished() == false && !done.get()) {
 			try {

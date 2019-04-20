@@ -29,8 +29,14 @@ public class Table {
 		this.port = port;
 		this.ip = ip;
 		this.RID = RID;
-		
-		readTable();
+	}
+	
+	public Table() {
+		ipList = new ArrayList<String>();
+		nextHop = new ArrayList<String>();
+		hops = new ArrayList<Integer>();
+		ports = new ArrayList<Integer>();
+		RIDs = new ArrayList<>();		
 	}
 	
 	public String getNextHop(String DestinationRID) {
@@ -40,7 +46,7 @@ public class Table {
 	/**
 	 * Reads table text file. RID + '.txt'
 	 */
-	private void readTable() {
+	public void readTable() {
 		try {
 			reader = new BufferedReader(new FileReader(new File("Tables/" + RID)));
 			
@@ -146,5 +152,49 @@ public class Table {
 
 	public void setIp(String ip) {
 		this.ip = ip;
+	}
+
+	public ArrayList<String> getRIDs() {
+		return RIDs;
+	}
+
+	public void setRIDs(ArrayList<String> rIDs) {
+		RIDs = rIDs;
+	}
+
+	public ArrayList<String> getIpList() {
+		return ipList;
+	}
+
+	public void setIpList(ArrayList<String> ipList) {
+		this.ipList = ipList;
+	}
+
+	public ArrayList<String> getNextHop() {
+		return nextHop;
+	}
+
+	public void setNextHop(ArrayList<String> nextHop) {
+		this.nextHop = nextHop;
+	}
+
+	public ArrayList<Integer> getHops() {
+		return hops;
+	}
+
+	public void setHops(ArrayList<Integer> hops) {
+		this.hops = hops;
+	}
+
+	public ArrayList<Integer> getPorts() {
+		return ports;
+	}
+
+	public ArrayList<String> getNextHops() {
+		return nextHop;
+	}
+	
+	public void setPorts(ArrayList<Integer> ports) {
+		this.ports = ports;
 	}
 }
