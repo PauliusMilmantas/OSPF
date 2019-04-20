@@ -1,33 +1,28 @@
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import javafx.scene.shape.Path;
+
 public class InputHandler extends Thread {
 
 	private Socket socket;
 	private BufferedReader reader;
-	private AtomicBoolean done;
 	private ConnectionTable connectionTable;
 	private Router router;
-	
-	private ArrayList<Table> tmpTableList;	//To resend table
-	private ArrayList<String> tmpRIDs;
-	
-	private ArrayList<String> messages;
 	
 	public InputHandler(Socket socket, Router router) {
 		this.socket = socket;
 		this.router = router;
 		this.connectionTable = router.connectionTable;
-		
-		messages = new ArrayList<>();
-		tmpTableList = new ArrayList<Table>();
-		tmpRIDs = new ArrayList<String>();
-		done = new AtomicBoolean(false);
 		
 		try {
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -68,24 +63,69 @@ public class InputHandler extends Thread {
 						case "LSU":
 								if(line.split(" ")[1].equals("TABLE")) {
 									if(line.split(" ")[2].equals("RID:")) {	//New table
-										tmpRIDs.add(line.split(" ")[2]);
+										File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID);
+										file.mkdir();
 										
-										Table t = new Table();
-										t.setRID(line.split(" ")[3]);
-										System.out.println(t.getRID());
-										tmpTableList.add(t);
-									}
+										file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[3] + ".txt");
+										file.createNewFile();
+										
+										PrintWriter writer = new PrintWriter(file);
+										writer.print("");
+										writer.close();
+										
+										file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt");
+										file.createNewFile();
+										
+										writer = new PrintWriter(file);
+										writer.print("");
+										writer.close();
+										
+										file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[3] + ".info.txt");
+										file.createNewFile();
+										
+										writer = new PrintWriter(file);
+										writer.print("");
+										writer.close();
+									} else {
+										if(line.split(" ")[3].equals("PORT:") || line.split(" ")[3].equals("IP:")) {	//Handling info file				
+											FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt", true); //the true will append the new data
+										    fw.write(line.split(" ")[3] + " " + line.split(" ")[4] + "\n");
+										    fw.close();
+										} else {
+											String ip, nextHop, RID;
+											int port, hops;
+											
+											String info[] = line.split(" ");
+											
+											String tmp[] = info[3].split(":");
+											
+											ip = tmp[0];
+											port = Integer.parseInt(tmp[1]);
+											RID = info[4];
+											nextHop = info[5];
+											hops = Integer.parseInt(info[6]);
+											
+											FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt", true); //the true will append the new data
+										    fw.write(ip + ":" + port + "\t" + RID + "\t" + nextHop + "\t" + hops + "\n");//appends the string to the file
+										    fw.close();
+										}
+									} 
 								} else if(line.split(" ")[1].equals("ENDTABLE")) {
-									String rid = line.split(" ")[2];
 									
-									System.out.println(this.tmpRIDs.size());
-									System.out.println(this.tmpTableList.size());
+									PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt");
+									writer.print(line.split(" ")[2] + "\n");
+									writer.close();
 									
-									//tmpTableList.remove(tmpRIDs.indexOf(rid)).seer();
-									//System.out.println(tmpRIDs.indexOf(rid));
-									//tmpTableList.remove(tmpRIDs.indexOf(rid));
-									//tmpTableList.remove(tmpRIDs.indexOf(0));
-									//tmpRIDs.remove(rid);
+									Table t = new Table();
+									t.readTable(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt");
+									t.setRID(line.split(" ")[2]);
+									t.getAdittionalInfo(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt");
+									
+									if(line.split(" ")[3].equals(router.RID)) { //Reached destination
+										//t.seer();
+									} else {
+										router.client.sendTable(line.split(" ")[3], t);
+									}
 								} else {	//For remove/adding router to table
 									if(line.split(" ")[2].equals("0")) {	//Remove router
 										connectionTable.removeRouter(line.split(" ")[1]);
@@ -93,7 +133,24 @@ public class InputHandler extends Thread {
 								}
 							break;
 						case "LSR":
+							String dest = line.split(" ")[2];
+							String source = line.split(" ")[1];
+							
+							if(dest.equals(router.RID)) {
+								router.client.sendTable(source);
+							} else {	//Send it away
+								ArrayList<Client> clientss = connectionTable.getClients();
 								
+								String nextHop = connectionTable.table.getNextHop(dest);
+									
+								for(int b = 0; b < clientss.size(); b++) {
+									if(clientss.get(b).getRID().equals(nextHop)) {
+										OutputHandler handler = clientss.get(b).getOutputHandler();
+										if(handler != null) handler.sendMessage("LSR " + source + " " + dest);
+									}
+								}
+							}
+							
 							break;
 						case "MESSAGE":
 							String RID = line.split(" ")[1];
@@ -107,7 +164,7 @@ public class InputHandler extends Thread {
 								router.client.messages.add(line);
 							}
 							break;
-							default:
+						default:
 							System.out.println("Unrecognised command");
 							break;
 					}

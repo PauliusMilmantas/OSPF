@@ -40,15 +40,24 @@ public class Table {
 	}
 	
 	public String getNextHop(String DestinationRID) {
-		return nextHop.get(RIDs.indexOf(DestinationRID));
+		try {
+			if(DestinationRID.equals(RID)) {
+				return RID;
+			} else {
+				return nextHop.get(RIDs.indexOf(DestinationRID));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
 	 * Reads table text file. RID + '.txt'
 	 */
-	public void readTable() {
+	public void readTable(String path) {
 		try {
-			reader = new BufferedReader(new FileReader(new File("Tables/" + RID)));
+			reader = new BufferedReader(new FileReader(new File(path)));
 			
 			String line = reader.readLine();
 			
@@ -73,6 +82,31 @@ public class Table {
 			} catch (IOException e) {
 				//Using empty routing table
 			}
+		}
+	}
+	
+	public void readTable() {
+		readTable("Tables/" + RID);
+	}
+	
+	/**
+	 * Reads info file from storage to get IP, PORT
+	 * Intended for reading table from storage
+	 */
+	public void getAdittionalInfo(String path) {
+		try {
+			reader = new BufferedReader(new FileReader(new File(path)));
+			
+			String line = reader.readLine();
+			String tr[] = line.split(" ");
+			
+			for(int a = 0; a < 2; a++) {
+				if(tr[0].equals("IP:")) ip = tr[1];
+				else if(tr[0].equals("PORT:")) port = Integer.parseInt(tr[1]);
+			}
+			
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

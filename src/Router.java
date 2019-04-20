@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.IOException;
 import java.util.Timer;
 
 public class Router {
@@ -23,7 +25,6 @@ public class Router {
 	}
 
 	private Router(String[] args) {
-		
 		ip = args[0].split(":")[0];
 		RID = args[1];
 		port = Integer.parseInt(args[0].split(":")[1]);
@@ -53,10 +54,6 @@ public class Router {
 	
 	private Router() {
 		String[] args = new String[2];
-		/*
-		args[0] = "127.0.0.1:92";
-		args[1] = "192.168.1.2";
-		*/
 		
 		args[0] = "127.0.0.1:9993";
 		args[1] = "192.168.1.3";		

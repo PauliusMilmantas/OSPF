@@ -8,7 +8,7 @@ public class Client {
 	private String ip;
 	private int port;
 	private InputHandler inputHandler;
-	private OutputHandler outputHandler;
+	private OutputHandler outputHandler = null;
 	private Socket socket;
 	/**
 	 * Last received 'Hello' message

@@ -1,5 +1,10 @@
 
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -25,10 +30,8 @@ public class CommandThread extends Thread {
 			line = scanner.nextLine();
 			
 			switch(line.split(" ")[0]) {
-				case "test":
-					//TMP FUNCTION CALL
-					router.client.sendTable(line.split(" ")[1]);	//Issiunsi table
-					
+				case "sendt":
+					router.client.sendTable(line.split(" ")[1]);
 					break;
 				case "q":
 					finished.set(true);
@@ -40,6 +43,35 @@ public class CommandThread extends Thread {
 					break;
 				case "status":
 					router.connectionTable.status();
+					break;
+				case "see":
+					if(line.equals("see all routers")) {
+						router.client.printAllTables();
+						
+						ArrayList<String> targets = new ArrayList<>();
+						
+						Scanner scan = new Scanner(System.in);
+						String s = scan.next();
+						
+						File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt");
+						
+						try {
+							BufferedReader reader = new BufferedReader(new FileReader(file));
+							
+							String linef = reader.readLine();
+							while(linef != null) {
+								targets.add(linef);								
+								linef = reader.readLine();
+							}
+							
+							for(int a = 0; a < targets.size(); a++) {
+								System.out.println(targets.get(a));
+							}
+							
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
 					break;
 				case "message":
 					String RID = line.split(" ")[1];
@@ -77,6 +109,8 @@ public class CommandThread extends Thread {
 					System.out.println("seer - See routing table");
 					System.out.println("status - Show status for all neighbours");
 					System.out.println("d - Change DEBUG mode");
+					System.out.println("sendt [Destination RID] - send table to destination RID");
+					System.out.println("see all routers - print all routing tables");
 					System.out.println("-------=====================================-------");
 					break;
 				default:

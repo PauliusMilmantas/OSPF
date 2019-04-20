@@ -22,10 +22,9 @@ public class OutputHandler {
 		try {			
 			writer = new BufferedWriter(new OutputStreamWriter(client.getSocket().getOutputStream()));
 			writer.write(message);
+			writer.flush();
 			writer.close();
-		} catch (IOException e) {	//Couldn't reach client
-			//if(router.DEBUG) System.out.println("[DEBUG] Couldn't reach " + client.getRID());
-			
+		} catch (IOException e) {	//Couldn't reach client		
 			Socket ss;
 			try {
 				ss = new Socket(client.getIp(), client.getPort());
