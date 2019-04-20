@@ -73,7 +73,7 @@ public class InputHandler extends Thread {
 										Table t = new Table();
 										t.setRID(line.split(" ")[3]);
 										System.out.println(t.getRID());
-										this.tmpTableList.add(t);
+										tmpTableList.add(t);
 									}
 								} else if(line.split(" ")[1].equals("ENDTABLE")) {
 									String rid = line.split(" ")[2];
