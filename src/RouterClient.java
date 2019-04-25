@@ -40,7 +40,7 @@ public class RouterClient extends Thread {
 	 */
 	public void printAllTables() {
 		if(router.DEBUG) 
-			System.out.println("[OUT] LRU");
+			System.out.println("[OUT] LSR");
 		
 		ArrayList<String> RIDs = connectionTable.table.getRIDs();
 		ArrayList<Client> clients = connectionTable.getClients();
@@ -49,9 +49,9 @@ public class RouterClient extends Thread {
 			String nextHop = connectionTable.table.getNextHop(RIDs.get(a));
 			
 			for(int b = 0; b < clients.size(); b++) {
-				if(RIDs.get(a).equals(nextHop)) {
+				if(clients.get(b).getRID().equals(nextHop)) {
 					OutputHandler handler = clients.get(b).getOutputHandler();
-					if(handler != null) handler.sendMessage("LSR " + router.RID + " " + RIDs.get(a));
+					handler.sendMessage("LSR " + router.RID + " " + RIDs.get(a));
 				}
 			}
 		}

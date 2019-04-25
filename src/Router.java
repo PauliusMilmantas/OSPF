@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Timer;
 
 public class Router {
@@ -32,6 +33,21 @@ public class Router {
 		table = new Table(ip, RID, port);
 		table.readTable();
 		connectionTable = new ConnectionTable(table, this);
+		
+		//Clearing info file
+		try {
+			File file = new File(System.getProperty("user.dir") + "\\Storage\\" + RID);
+			file.mkdir();
+			
+			file = new File(System.getProperty("user.dir") + "\\Storage\\" + RID + "\\info.txt");
+			file.createNewFile();
+			
+			PrintWriter writer = new PrintWriter(file);
+			writer.print("");
+			writer.close();
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 		
 		System.out.println("Running router on: " + ip + ":" + port + " as " + RID);
 		

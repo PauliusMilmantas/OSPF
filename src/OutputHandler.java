@@ -18,7 +18,9 @@ public class OutputHandler {
 		client.setOutputHandler(this);
 	}
 	
-	public void sendMessage(String message) {		
+	public void sendMessage(String message) {
+		//if(router.DEBUG) System.out.println("[OUT] " + message);
+		
 		try {			
 			writer = new BufferedWriter(new OutputStreamWriter(client.getSocket().getOutputStream()));
 			writer.write(message);

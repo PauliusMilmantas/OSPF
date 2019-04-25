@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -48,28 +49,35 @@ public class CommandThread extends Thread {
 					if(line.equals("see all routers")) {
 						router.client.printAllTables();
 						
-						ArrayList<String> targets = new ArrayList<>();
-						
 						Scanner scan = new Scanner(System.in);
 						String s = scan.next();
 						
-						File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt");
+						ArrayList<String> RIDs = router.getTable().getRIDs();
 						
 						try {
-							BufferedReader reader = new BufferedReader(new FileReader(file));
-							
-							String linef = reader.readLine();
-							while(linef != null) {
-								targets.add(linef);								
-								linef = reader.readLine();
+							for(int a = 0; a < RIDs.size(); a++) {
+								File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + RIDs.get(a) + ".txt");
+								
+								BufferedReader reader = new BufferedReader(new FileReader(file));
+								
+								System.out.println(RIDs.get(a));
+								String lined = reader.readLine();
+								while(lined != null) {
+									System.out.println(lined);
+									lined = reader.readLine();
+								}
+								
 							}
 							
-							for(int a = 0; a < targets.size(); a++) {
-								System.out.println(targets.get(a));
-							}
+							
+						
+						
+							
+							
+							
 							
 						} catch (IOException e) {
-							e.printStackTrace();
+							//e.printStackTrace();
 						}
 					}
 					break;

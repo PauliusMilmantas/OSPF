@@ -62,21 +62,11 @@ public class InputHandler extends Thread {
 							break;
 						case "LSU":
 								if(line.split(" ")[1].equals("TABLE")) {
-									if(line.split(" ")[2].equals("RID:")) {	//New table
-										File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID);
-										file.mkdir();
-										
-										file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[3] + ".txt");
+									if(line.split(" ")[2].equals("RID:")) {	//New table									
+										File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[3] + ".txt");
 										file.createNewFile();
 										
 										PrintWriter writer = new PrintWriter(file);
-										writer.print("");
-										writer.close();
-										
-										file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt");
-										file.createNewFile();
-										
-										writer = new PrintWriter(file);
 										writer.print("");
 										writer.close();
 										
@@ -91,7 +81,7 @@ public class InputHandler extends Thread {
 											FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt", true); //the true will append the new data
 										    fw.write(line.split(" ")[3] + " " + line.split(" ")[4] + "\n");
 										    fw.close();
-										} else {
+										} else {											
 											String ip, nextHop, RID;
 											int port, hops;
 											
@@ -103,7 +93,14 @@ public class InputHandler extends Thread {
 											port = Integer.parseInt(tmp[1]);
 											RID = info[4];
 											nextHop = info[5];
-											hops = Integer.parseInt(info[6]);
+											
+											try {
+												hops = Integer.parseInt(info[6]);
+											} catch(Exception e) {
+												hops = Integer.parseInt(info[6].substring(0, info[6].length()-3));
+												
+												
+											}
 											
 											FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt", true); //the true will append the new data
 										    fw.write(ip + ":" + port + "\t" + RID + "\t" + nextHop + "\t" + hops + "\n");//appends the string to the file
@@ -145,8 +142,8 @@ public class InputHandler extends Thread {
 									
 								for(int b = 0; b < clientss.size(); b++) {
 									if(clientss.get(b).getRID().equals(nextHop)) {
-										OutputHandler handler = clientss.get(b).getOutputHandler();
-										if(handler != null) handler.sendMessage("LSR " + source + " " + dest);
+										OutputHandler handler = clientss.get(b).getOutputHandler();										
+										handler.sendMessage("LSR " + source + " " + dest);
 									}
 								}
 							}
