@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Timer;
+import java.util.concurrent.TimeUnit;
 
 public class Router {
 
@@ -19,7 +20,7 @@ public class Router {
 	
 	private Timer timer;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) {		
 		//Ip address:port, RID
 		if(args.length > 0) new Router(args);
 		else new Router();
@@ -58,6 +59,30 @@ public class Router {
 		timer.schedule(new HelloThread(this), 6000, 6000);
 	}
 
+	public void addLink(String RID, String ip, int port, int hop) {
+		client.connectionTable.addLink(RID);
+		table.addLink(RID, ip, port, hop);
+		
+		server.connectionTable.addLink(RID);
+		
+		for(int a = 0; a < 4; a++) {
+			sleepForSecond();
+		}
+		
+		client.sendMessage(RID, "Hello " + this.RID + " new " + this.ip + ":" + this.port);
+		client.sendTable(RID);
+		
+		if(DEBUG) System.out.println("[DEBUG] Link added.");
+	}
+	
+	private void sleepForSecond() {
+		try {	//To avoid getting ENDTABLE sent too early
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public void close() {
 		client.close();
 
@@ -72,7 +97,7 @@ public class Router {
 		String[] args = new String[2];
 		
 		args[0] = "127.0.0.1:9993";
-		args[1] = "192.168.1.3";		
+		args[1] = "192.168.1.99";		
 		new Router(args);
 	}
 	

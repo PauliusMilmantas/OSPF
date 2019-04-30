@@ -66,7 +66,6 @@ public class CommandThread extends Thread {
 									System.out.println(lined);
 									lined = reader.readLine();
 								}
-								
 							}
 							
 							
@@ -80,6 +79,10 @@ public class CommandThread extends Thread {
 							//e.printStackTrace();
 						}
 					}
+					break;
+				case "addLink":
+					//RID, ip, port, hops
+					router.addLink(line.split(" ")[1], line.split(" ")[2], Integer.parseInt(line.split(" ")[3]), 1);
 					break;
 				case "message":
 					String RID = line.split(" ")[1];

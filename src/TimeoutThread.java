@@ -12,7 +12,7 @@ public class TimeoutThread extends TimerTask {
 	}
 	
 	public void run() {	
-		if(client.getConnectionStatus() == 1) {
+		if(client.getConnectionStatus() == 1 || client.getConnectionStatus() == 0) {
 			if((System.currentTimeMillis() - client.getTime().getTime())/1000 > 16) {
 				System.out.println(client.getRID() + " went offline.");
 				client.setConnectionStatus(2);

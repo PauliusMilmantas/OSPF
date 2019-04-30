@@ -10,7 +10,7 @@ import java.util.Timer;
 public class RouterServer extends Thread {
 
 	private RouterClient client;
-	private ConnectionTable connectionTable;
+	public ConnectionTable connectionTable;
 	private Router router;
 	
 	public RouterServer(RouterClient client, ConnectionTable connectionTable, Router router) {

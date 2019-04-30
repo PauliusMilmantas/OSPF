@@ -25,9 +25,26 @@ public class ConnectionTable {
 			Client cl = new Client(nb.get(a), table.getIp(nb.get(a)), table.getPort(nb.get(a)));
 			clients.add(cl);
 			
+			new OutputHandler(router, cl);
+			
 			Timer t = new Timer();
 			timers.add(t);
 			t.schedule(new TimeoutThread(cl, router), 3000, 3000);
+		}
+	}
+	
+	public void addLink(String RID) {
+		ArrayList<String> nb = table.getNeighbours();
+		
+		for(int a = 0; a < nb.size(); a++) {
+			if(nb.get(a).equals(RID)) {
+				Client cl = new Client(RID, table.getIp(RID), table.getPort(RID));
+				clients.add(cl);
+				
+				Timer t = new Timer();
+				timers.add(t);
+				t.schedule(new TimeoutThread(cl, router), 3000, 3000);
+			}
 		}
 	}
 	

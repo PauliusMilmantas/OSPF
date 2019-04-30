@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javafx.scene.shape.Path;
@@ -43,6 +44,8 @@ public class InputHandler extends Thread {
 					
 					switch(line.split(" ")[0]) {					
 						case "Hello":
+							boolean found = false;
+							
 							ArrayList<Client> clients = connectionTable.getClients();
 							
 							for(int a = 0; a < clients.size(); a++) {
@@ -51,12 +54,64 @@ public class InputHandler extends Thread {
 								if(client.getRID().equals(line.split(" ")[1].split("\t")[0])) {
 									client.setTime(new Timestamp(System.currentTimeMillis()));
 									
+									found = true;
+									
 									if(client.getConnectionStatus() != 1) {
 										client.setConnectionStatus(1);
 										client.setInputHandler(this);
 										client.setSocket(socket);
 									}
 								}
+							}
+							
+							if(!found) { //New router
+								String args[] = line.split(" ");
+
+								if(args.length > 2) {
+									if(args[2].equals("new")) {
+										String RID = args[1];
+										String ip = args[3].split(":")[0];
+										int port = Integer.parseInt(args[3].split(":")[1]);
+
+										connectionTable.addLink(RID);
+										connectionTable.table.addLink(RID, ip, port, 1);
+										
+										router.server.connectionTable.addLink(RID);
+										router.server.connectionTable.table.addLink(RID, ip, port, 1);
+								
+										if(router.DEBUG) System.out.println("[DEBUG] New router detected " + RID);
+										
+										for(int a = 0; a < 6; a++) {
+											sleepForSecond();
+										}
+										
+										router.client.sendTable(RID);
+										
+										/*
+										//Sending to neighbours
+										for(int a = 0; a < clients.size(); a++) {
+											ArrayList<String> RIDs = connectionTable.table.getRIDs();
+											
+											for(int b = 0; b < RIDs.size(); b++) {
+												String nextHop = connectionTable.table.getNextHop(RIDs.get(b));
+												
+												for(int v = 0; v < clients.size(); v++) {
+													if(clients.get(v).getRID().equals(nextHop)) {
+														OutputHandler handler = clients.get(v).getOutputHandler();
+														handler.sendMessage("Hello " + RID + " new " + ip + ":" + port);
+													}
+												}
+											}
+										}
+										*/
+										/*
+										for(int a = 0; a < clients.size(); a++) {
+											router.client.sendOverNetwork(clients.get(a).getRID(), line);
+										}
+										*/
+									}
+								}
+								
 							}
 								
 							break;
@@ -170,6 +225,14 @@ public class InputHandler extends Thread {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}	
+	}
+	
+	private void sleepForSecond() {
+		try {	//To avoid getting ENDTABLE sent too early
+			TimeUnit.SECONDS.sleep(1);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void close() {

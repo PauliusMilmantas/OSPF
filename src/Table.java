@@ -56,33 +56,42 @@ public class Table {
 	 * Reads table text file. RID + '.txt'
 	 */
 	public void readTable(String path) {
-		try {
-			reader = new BufferedReader(new FileReader(new File(path)));
-			
-			String line = reader.readLine();
-			
-			while(line != null) {
-				String[] rt = line.split("\t");
-				ipList.add(rt[0].split(":")[0]);
-				ports.add(Integer.parseInt(rt[0].split(":")[1]));
-				RIDs.add(rt[1]);
-				nextHop.add(rt[2]);
-				hops.add(Integer.parseInt(rt[3]));
-				
-				line = reader.readLine();	
-			}
-		} catch (FileNotFoundException e) {
-			if(Router.DEBUG) System.out.println("ERROR: " + RID + " can't find routing table.");
-			if(Router.DEBUG) System.out.println("Using empty routing table");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
+		
+		File file = new File(path);
+		if(file.exists()) {
 			try {
+				reader = new BufferedReader(new FileReader(new File(path)));
+				
+				String line = reader.readLine();
+				
+				while(line != null) {
+					String[] rt = line.split("\t");
+					ipList.add(rt[0].split(":")[0]);
+					ports.add(Integer.parseInt(rt[0].split(":")[1]));
+					RIDs.add(rt[1]);
+					nextHop.add(rt[2]);
+					hops.add(Integer.parseInt(rt[3]));
+					
+					line = reader.readLine();
+				}
+				
 				reader.close();
+			} catch (FileNotFoundException e) {
+				if(Router.DEBUG) System.out.println("Using empty routing tableff");
 			} catch (IOException e) {
-				//Using empty routing table
+				e.printStackTrace();
 			}
+		} else {
+			
 		}
+	}
+	
+	public void addLink(String RID, String ip, int port, int hop) {
+		RIDs.add(RID);
+		ipList.add(ip);
+		ports.add(port);
+		hops.add(hop);
+		nextHop.add(RID);
 	}
 	
 	public void readTable() {
@@ -119,7 +128,7 @@ public class Table {
 		System.out.println("Router port: " + port);
 		
 		for(int a = 0; a < ipList.size(); a++) {
-			System.out.println(ipList.get(a) + ":"  + ports.get(a) + "\t" + RIDs.get(a) + "\t" + hops.get(a));
+			System.out.println(ipList.get(a) + ":"  + ports.get(a) + "\t" + RIDs.get(a) + "\t" + hops.get(a) + "\t" + nextHop.get(a));
 		}
 	}
 	
@@ -129,7 +138,7 @@ public class Table {
 	}
 	
 	public void removeRouter(String RID) {
-		if(hasRouter(RID)) {
+		while(hasRouter(RID)) {
 			int id = RIDs.indexOf(RID);
 			RIDs.remove(id);
 			ipList.remove(id);

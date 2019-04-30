@@ -9,7 +9,7 @@ public class RouterClient extends Thread {
 
 	public CommandThread commandThread;
 	private Router router;
-	private ConnectionTable connectionTable;
+	public ConnectionTable connectionTable;
 	private AtomicBoolean done;
 	
 	public ArrayList<String> messages;
@@ -73,6 +73,29 @@ public class RouterClient extends Thread {
 		}
 	}
 	
+	public void sendMessage(String DestinationRID, String message) {
+		
+		if(router.DEBUG) 
+			System.out.println("[OUT][" + DestinationRID + "] " + message);
+		
+		String nextHop = router.getTable().getNextHop(DestinationRID);
+		
+		ArrayList<Client> clients = connectionTable.getClients();
+		
+		for(int a = 0; a < clients.size(); a++) {
+			if(clients.get(a).getRID().equals(nextHop)) {
+				OutputHandler handler = clients.get(a).getOutputHandler();
+				
+				if(handler != null) {
+					handler.sendMessage(message);
+				} else {
+					handler = new OutputHandler(router, clients.get(a));
+					handler.sendMessage(message);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Sends given routing table to destination RID
 	 * @param DestinationRID
@@ -89,6 +112,8 @@ public class RouterClient extends Thread {
 			if(clients.get(a).getRID().equals(nextHop)) {
 				OutputHandler handler = clients.get(a).getOutputHandler();
 	
+				if(handler == null) handler = new OutputHandler(router, clients.get(a));
+				
 				sleepForSecond();
 				handler.sendMessage("LSU TABLE RID: " + table.getRID());
 				sleepForSecond();
