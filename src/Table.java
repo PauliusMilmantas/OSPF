@@ -87,11 +87,13 @@ public class Table {
 	}
 	
 	public void addLink(String RID, String ip, int port, int hop) {
-		RIDs.add(RID);
-		ipList.add(ip);
-		ports.add(port);
-		hops.add(hop);
-		nextHop.add(RID);
+		if(!RIDs.contains(RID)) {
+			RIDs.add(RID);
+			ipList.add(ip);
+			ports.add(port);
+			hops.add(hop);
+			nextHop.add(RID);
+		}
 	}
 	
 	public void readTable() {

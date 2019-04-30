@@ -47,10 +47,15 @@ public class CommandThread extends Thread {
 					break;
 				case "see":
 					if(line.equals("see all routers")) {
+						router.amountOfEndTables = 0;
 						router.client.printAllTables();
 						
 						Scanner scan = new Scanner(System.in);
 						String s = scan.next();
+						
+						//while(router.amountOfEndTables != router.connectionTable.table.getRIDs().size()) {
+							
+						//}
 						
 						ArrayList<String> RIDs = router.getTable().getRIDs();
 						
@@ -67,13 +72,6 @@ public class CommandThread extends Thread {
 									lined = reader.readLine();
 								}
 							}
-							
-							
-						
-						
-							
-							
-							
 							
 						} catch (IOException e) {
 							//e.printStackTrace();
@@ -118,10 +116,12 @@ public class CommandThread extends Thread {
 					System.out.println("-------========== H E L P ==================-------");
 					System.out.println("q - quit");
 					System.out.println("seer - See routing table");
+					System.out.println("addLink [RID] [ip] [port] - add link");
 					System.out.println("status - Show status for all neighbours");
 					System.out.println("d - Change DEBUG mode");
 					System.out.println("sendt [Destination RID] - send table to destination RID");
 					System.out.println("see all routers - print all routing tables");
+					System.out.println("message [Destination RID] [text] - send message to RID");
 					System.out.println("-------=====================================-------");
 					break;
 				default:

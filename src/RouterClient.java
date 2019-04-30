@@ -135,6 +135,8 @@ public class RouterClient extends Thread {
 				sleepForSecond();
 				sleepForSecond();
 				sleepForSecond();
+				sleepForSecond();
+				sleepForSecond();
 				
 				handler.sendMessage("LSU ENDTABLE " + table.getRID() + " " + DestinationRID);
 			}

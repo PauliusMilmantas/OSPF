@@ -20,6 +20,9 @@ public class InputHandler extends Thread {
 	private ConnectionTable connectionTable;
 	private Router router;
 	
+	private boolean waitingToResend = false;
+	private String waitingFor; //Table RID
+	
 	public InputHandler(Socket socket, Router router) {
 		this.socket = socket;
 		this.router = router;
@@ -81,9 +84,10 @@ public class InputHandler extends Thread {
 								
 										if(router.DEBUG) System.out.println("[DEBUG] New router detected " + RID);
 										
-										for(int a = 0; a < 6; a++) {
-											sleepForSecond();
-										}
+										waitingToResend = true;
+										waitingFor = RID;
+										
+										System.out.println("WAITING FOR " + RID + ".");
 										
 										router.client.sendTable(RID);
 										
@@ -164,6 +168,8 @@ public class InputHandler extends Thread {
 									} 
 								} else if(line.split(" ")[1].equals("ENDTABLE")) {
 									
+									router.amountOfEndTables++;
+									
 									PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt");
 									writer.print(line.split(" ")[2] + "\n");
 									writer.close();
@@ -177,6 +183,17 @@ public class InputHandler extends Thread {
 										//t.seer();
 									} else {
 										router.client.sendTable(line.split(" ")[3], t);
+									}
+									
+									if(line.split(" ")[2].equals(waitingFor)) {
+										System.out.println("RESENDING TABLES==================");
+										waitingToResend = false;
+										
+										
+										
+										
+										
+										
 									}
 								} else {	//For remove/adding router to table
 									if(line.split(" ")[2].equals("0")) {	//Remove router

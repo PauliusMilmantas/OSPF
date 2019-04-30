@@ -28,7 +28,7 @@ public class OutputHandler {
 			writer.write(message);
 			writer.flush();
 			writer.close();
-		} catch (IOException e) {	//Couldn't reach client		
+		} catch (Exception e) {	//Couldn't reach client		
 			Socket ss;
 			try {
 				ss = new Socket(client.getIp(), client.getPort());

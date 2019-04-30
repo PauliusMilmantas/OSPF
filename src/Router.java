@@ -14,6 +14,8 @@ public class Router {
 	public ConnectionTable connectionTable;
 	private Table table;
 	
+	public int amountOfEndTables = 0;
+	
 	public int port;
 	public String RID;
 	public String ip;
