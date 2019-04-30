@@ -1,11 +1,13 @@
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +24,8 @@ public class InputHandler extends Thread {
 	
 	private boolean waitingToResend = false;
 	private String waitingFor; //Table RID
+	
+	public static boolean printTable = true;
 	
 	public InputHandler(Socket socket, Router router) {
 		this.socket = socket;
@@ -84,10 +88,8 @@ public class InputHandler extends Thread {
 								
 										if(router.DEBUG) System.out.println("[DEBUG] New router detected " + RID);
 										
-										waitingToResend = true;
-										waitingFor = RID;
-										
-										System.out.println("WAITING FOR " + RID + ".");
+										//waitingToResend = true;
+										//waitingFor = RID;
 										
 										router.client.sendTable(RID);
 										
@@ -157,7 +159,7 @@ public class InputHandler extends Thread {
 												hops = Integer.parseInt(info[6]);
 											} catch(Exception e) {
 												hops = Integer.parseInt(info[6].substring(0, info[6].length()-3));
-												
+						
 												
 											}
 											
@@ -179,21 +181,26 @@ public class InputHandler extends Thread {
 									t.setRID(line.split(" ")[2]);
 									t.getAdittionalInfo(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt");
 									
-									if(line.split(" ")[3].equals(router.RID)) { //Reached destination
-										//t.seer();
+									if(line.split(" ")[3].equals(router.RID)) { //Reached destination										
+										Table tmpTable = new Table();
+										tmpTable.readTable(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt");
+										tmpTable.getAdittionalInfo(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt");
+										tmpTable.setRID(line.split(" ")[2]);
+										
+										if(printTable) tmpTable.seer();
+										
+										
+										
+										
+									
+										
+										
+										
+										
+										
+										
 									} else {
 										router.client.sendTable(line.split(" ")[3], t);
-									}
-									
-									if(line.split(" ")[2].equals(waitingFor)) {
-										System.out.println("RESENDING TABLES==================");
-										waitingToResend = false;
-										
-										
-										
-										
-										
-										
 									}
 								} else {	//For remove/adding router to table
 									if(line.split(" ")[2].equals("0")) {	//Remove router

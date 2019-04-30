@@ -49,33 +49,6 @@ public class CommandThread extends Thread {
 					if(line.equals("see all routers")) {
 						router.amountOfEndTables = 0;
 						router.client.printAllTables();
-						
-						Scanner scan = new Scanner(System.in);
-						String s = scan.next();
-						
-						//while(router.amountOfEndTables != router.connectionTable.table.getRIDs().size()) {
-							
-						//}
-						
-						ArrayList<String> RIDs = router.getTable().getRIDs();
-						
-						try {
-							for(int a = 0; a < RIDs.size(); a++) {
-								File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + RIDs.get(a) + ".txt");
-								
-								BufferedReader reader = new BufferedReader(new FileReader(file));
-								
-								System.out.println(RIDs.get(a));
-								String lined = reader.readLine();
-								while(lined != null) {
-									System.out.println(lined);
-									lined = reader.readLine();
-								}
-							}
-							
-						} catch (IOException e) {
-							//e.printStackTrace();
-						}
 					}
 					break;
 				case "addLink":
