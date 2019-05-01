@@ -41,6 +41,22 @@ public class Router {
 		table.readTable();
 		connectionTable = new ConnectionTable(table, this);
 		
+		
+		
+		
+		
+		
+		table.setRID("192.168.1.104");
+		table.readTable("/Storage/192.168.1.101/192.168.1.104.txt");
+		//table.getAdittionalInfo("Storage/192.168.1.101/192.168.1.103.info.txt");
+		connectionTable.table.recalculateDistances();
+		
+		
+		
+		
+		
+		
+		
 		/*
 		Node nodeA = new Node("A");
 		Node nodeB = new Node("B");
@@ -90,14 +106,14 @@ public class Router {
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		
+		/*
 		System.out.println("Running router on: " + ip + ":" + port + " as " + RID);
 		
 		client = new RouterClient(this);
 		server = new RouterServer(client, connectionTable, this);
 		
 		timer = new Timer();
-		timer.schedule(new HelloThread(this), 6000, 6000);
+		timer.schedule(new HelloThread(this), 6000, 6000);*/
 	}
 
 	public void addLink(String RID, String ip, int port, int hop) {

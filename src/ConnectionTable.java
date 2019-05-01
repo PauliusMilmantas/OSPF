@@ -1,3 +1,10 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Timer;
 
@@ -77,12 +84,32 @@ public class ConnectionTable {
 		if(table.hasRouter(RID)) {
 			table.removeRouter(RID);
 			
-			//From table
+			//From storage
+			File ff = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + RID + ".txt");
+			ff.delete();
+			
+			//From connectionTable
 			for(int a = 0; a < clients.size(); a++) {
 				if(clients.get(a).getRID().equals(RID)) {
 					clients.get(a).close();
 					clients.remove(a);
 					System.out.println(RID + " was removed!");
+				}
+			}
+			
+			//From table
+			boolean ch = true;
+			while(!ch) {
+				ch = false;
+				for(int a = 0; a < table.RIDs.size(); a++) {
+					if(table.getNextHop(table.getRIDs().get(a)).equals(RID)) {
+						table.RIDs.remove(a);
+						table.ipList.remove(a);
+						table.nextHop.remove(a);
+						table.hops.remove(a);
+						table.ports.remove(a);
+						ch = true;
+					}
 				}
 			}
 			

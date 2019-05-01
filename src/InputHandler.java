@@ -93,33 +93,7 @@ public class InputHandler extends Thread {
 								
 										if(router.DEBUG) System.out.println("[DEBUG] New router detected " + RID);
 										
-										//waitingToResend = true;
-										//waitingFor = RID;
-										
 										router.client.sendTable(RID);
-										
-										/*
-										//Sending to neighbours
-										for(int a = 0; a < clients.size(); a++) {
-											ArrayList<String> RIDs = connectionTable.table.getRIDs();
-											
-											for(int b = 0; b < RIDs.size(); b++) {
-												String nextHop = connectionTable.table.getNextHop(RIDs.get(b));
-												
-												for(int v = 0; v < clients.size(); v++) {
-													if(clients.get(v).getRID().equals(nextHop)) {
-														OutputHandler handler = clients.get(v).getOutputHandler();
-														handler.sendMessage("Hello " + RID + " new " + ip + ":" + port);
-													}
-												}
-											}
-										}
-										*/
-										/*
-										for(int a = 0; a < clients.size(); a++) {
-											router.client.sendOverNetwork(clients.get(a).getRID(), line);
-										}
-										*/
 									}
 								}
 								
@@ -201,7 +175,6 @@ public class InputHandler extends Thread {
 										for(int a = 0; a < tmpTable.getRIDs().size(); a++) {
 											if(!rids.contains(tmpTable.getRIDs().get(a)) && !tmpTable.getRIDs().get(a).equals(router.RID)) {
 												change = true;
-												System.out.println("CHANGED");
 											}
 										}
 										
@@ -228,17 +201,15 @@ public class InputHandler extends Thread {
 										
 										change = false;
 										
-										
-										
-										
-										
-										
 									} else {
 										router.client.sendTable(line.split(" ")[3], t);
 									}
 								} else {	//For remove/adding router to table
 									if(line.split(" ")[2].equals("0")) {	//Remove router
 										connectionTable.removeRouter(line.split(" ")[1]);
+										
+										if(router.DEBUG) System.out.println("[DEBUG] Recalculating distances.");
+										connectionTable.table.recalculateDistances();
 									}
 								}
 							break;

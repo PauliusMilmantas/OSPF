@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import alg.*;
 
 public class Table {
 
@@ -129,15 +132,9 @@ public class Table {
 		System.out.println("Router ip address: " + ip);
 		System.out.println("Router port: " + port);
 		
-		//if(ipList.size() >= RIDs.size()) {
-			for(int a = 0; a < ipList.size(); a++) {
-				System.out.println(ipList.get(a) + ":"  + ports.get(a) + "\t" + RIDs.get(a) + "\t" + hops.get(a) + "\t" + nextHop.get(a));
-			}
-	/*	} else {
-			for(int a = 0; a < RIDs.size(); a++) {
-				System.out.println("127.0.0.1" + ":"  + 0 + "\t" + RIDs.get(a) + "\t" + 0 + "\t" + 0);
-			}
-		}*/
+		for(int a = 0; a < ipList.size(); a++) {
+			System.out.println(ipList.get(a) + ":"  + ports.get(a) + "\t" + RIDs.get(a) + "\t" + hops.get(a) + "\t" + nextHop.get(a));
+		}
 	}
 	
 	public boolean hasRouter(String RID) {
@@ -173,6 +170,87 @@ public class Table {
 		}
 		
 		return neighbours;
+	}
+	
+	/**
+	 * Uses Dijkstra to calculate all hops
+	 * saves changes to table
+	 */
+	public void recalculateDistances() {
+		
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir") + "\\Storage\\" + RID + "\\info.txt")));
+			ArrayList<String> rids = new ArrayList<>();
+			
+			Graph graph = new Graph();
+			
+			HashMap<String, Node> map = new HashMap<String, Node>();
+			map.put(RID, new Node(RID));
+			
+			String line = reader.readLine();
+			while(line != null) {
+				
+				if(!rids.contains(line)) {
+					rids.add(line);
+					
+					if(new File(System.getProperty("user.dir") + "\\Storage\\" + RID + "\\" + line + ".txt").exists())	{
+						BufferedReader readerrr = new BufferedReader(new FileReader(new File(System.getProperty("user.dir") + "\\Storage\\" + RID + "\\" + line + ".txt")));
+						
+						String ff = readerrr.readLine();
+						while(ff != null) {
+							
+							String gg[] = ff.split("\t");
+							if(gg[3].equals("1")) {
+								Node A, B;
+								
+								if(map.containsKey(gg[1])) {
+									A = map.get(gg[1]);
+								} else {
+									A = new Node(gg[1]);
+									map.put(gg[1], A);
+								}
+								
+								if(map.containsKey(line)) {
+									B = map.get(line);
+								} else {
+									B = new Node(line);
+									map.put(line, B);
+								}
+								
+								B.addDestination(A, 1);
+								A.addDestination(B, 1);
+								
+								System.out.println(B.getName() + " " + A.getName());
+							}					
+						
+							ff = readerrr.readLine();
+						}		
+						readerrr.close();
+					}
+					
+					for(int a = 0; a < rids.size(); a++) {
+						graph.addNode(map.get(rids.get(a)));
+					}
+					
+
+				}
+			
+				line = reader.readLine();
+			}
+			
+			graph = Dijkstra.calculateShortestPathFromSource(graph, map.get(RID));
+			
+			/*
+			System.out.println("Source: " + map.get(RID).getName());
+			System.out.println(graph.nodes.toString());	
+			*/
+			
+			
+			
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public int getPort(String RID) {
