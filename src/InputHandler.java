@@ -13,6 +13,11 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import alg.Dijkstra;
+import alg.Graph;
+import alg.Node;
+import es.usc.citius.hipster.graph.GraphBuilder;
+import es.usc.citius.hipster.graph.HipsterDirectedGraph;
 import javafx.scene.shape.Path;
 
 public class InputHandler extends Thread {
@@ -127,6 +132,10 @@ public class InputHandler extends Thread {
 										File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[3] + ".txt");
 										file.createNewFile();
 										
+										FileWriter writerd = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt", true);
+										writerd.write(line.split(" ")[3] + "\n");
+										writerd.close();
+										
 										PrintWriter writer = new PrintWriter(file);
 										writer.print("");
 										writer.close();
@@ -172,10 +181,6 @@ public class InputHandler extends Thread {
 									
 									router.amountOfEndTables++;
 									
-									PrintWriter writer = new PrintWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt");
-									writer.print(line.split(" ")[2] + "\n");
-									writer.close();
-									
 									Table t = new Table();
 									t.readTable(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt");
 									t.setRID(line.split(" ")[2]);
@@ -189,10 +194,39 @@ public class InputHandler extends Thread {
 										
 										if(printTable) tmpTable.seer();
 										
-										
-										
-										
+										boolean changed = false;
+										ArrayList<String> rids = connectionTable.table.getRIDs();
 									
+										boolean change = false;
+										for(int a = 0; a < tmpTable.getRIDs().size(); a++) {
+											if(!rids.contains(tmpTable.getRIDs().get(a)) && !tmpTable.getRIDs().get(a).equals(router.RID)) {
+												change = true;
+												System.out.println("CHANGED");
+											}
+										}
+										
+										//Change table
+										if(change) {
+											//Ading to local table
+											for(int a = 0; a < t.getRIDs().size(); a++) {
+												if(!t.getRIDs().get(a).equals(router.RID) &&
+														!connectionTable.table.getRIDs().contains(t.getRIDs().get(a))) {
+													
+													connectionTable.table.RIDs.add(t.getRIDs().get(a));
+													connectionTable.table.ipList.add(t.getIp(t.getRIDs().get(a)));
+													connectionTable.table.nextHop.add(t.getRID());
+													connectionTable.table.hops.add(t.getHops().get(a) + 1);
+													connectionTable.table.ports.add(t.getPort(t.getRIDs().get(a)));
+												}
+											}
+											
+											//Sending to others
+											for(int a = 0; a < connectionTable.table.getRIDs().size(); a++) {
+												router.client.sendTable(connectionTable.table.getRIDs().get(a), connectionTable.table);
+											}
+										}
+										
+										change = false;
 										
 										
 										

@@ -12,11 +12,11 @@ public class Table {
 	private String RID;
 	private String ip;
 	
-	private ArrayList<String> RIDs;
-	private ArrayList<String> ipList;
-	private ArrayList<String> nextHop;
-	private ArrayList<Integer> hops;
-	private ArrayList<Integer> ports;
+	public ArrayList<String> RIDs;
+	public ArrayList<String> ipList;
+	public ArrayList<String> nextHop;
+	public ArrayList<Integer> hops;
+	public ArrayList<Integer> ports;
 	private BufferedReader reader;
 	
 	public Table(String ip, String RID, int port) {
@@ -129,9 +129,15 @@ public class Table {
 		System.out.println("Router ip address: " + ip);
 		System.out.println("Router port: " + port);
 		
-		for(int a = 0; a < ipList.size(); a++) {
-			System.out.println(ipList.get(a) + ":"  + ports.get(a) + "\t" + RIDs.get(a) + "\t" + hops.get(a) + "\t" + nextHop.get(a));
-		}
+		//if(ipList.size() >= RIDs.size()) {
+			for(int a = 0; a < ipList.size(); a++) {
+				System.out.println(ipList.get(a) + ":"  + ports.get(a) + "\t" + RIDs.get(a) + "\t" + hops.get(a) + "\t" + nextHop.get(a));
+			}
+	/*	} else {
+			for(int a = 0; a < RIDs.size(); a++) {
+				System.out.println("127.0.0.1" + ":"  + 0 + "\t" + RIDs.get(a) + "\t" + 0 + "\t" + 0);
+			}
+		}*/
 	}
 	
 	public boolean hasRouter(String RID) {
@@ -159,8 +165,10 @@ public class Table {
 		ArrayList<String> neighbours = new ArrayList<String>();
 		
 		for(int a = 0; a < RIDs.size(); a++) {
-			if(hops.get(a) == 1) {
-				neighbours.add(RIDs.get(a));
+			if(hops.size() >= RIDs.size()) {
+				if(hops.get(a) == 1) {
+					neighbours.add(RIDs.get(a));
+				}
 			}
 		}
 		

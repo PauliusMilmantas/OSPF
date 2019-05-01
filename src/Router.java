@@ -1,8 +1,12 @@
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Set;
 import java.util.Timer;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+
+import alg.*;
 
 public class Router {
 
@@ -36,6 +40,41 @@ public class Router {
 		table = new Table(ip, RID, port);
 		table.readTable();
 		connectionTable = new ConnectionTable(table, this);
+		
+		/*
+		Node nodeA = new Node("A");
+		Node nodeB = new Node("B");
+		Node nodeC = new Node("C");
+		Node nodeD = new Node("D"); 
+		Node nodeE = new Node("E");
+		Node nodeF = new Node("F");
+		 
+		nodeA.addDestination(nodeB, 10);
+		nodeA.addDestination(nodeC, 15);
+		 
+		nodeB.addDestination(nodeD, 12);
+		nodeB.addDestination(nodeF, 15);
+		 
+		nodeC.addDestination(nodeE, 10);
+		 
+		nodeD.addDestination(nodeE, 2);
+		nodeD.addDestination(nodeF, 1);
+		 
+		nodeF.addDestination(nodeE, 5);
+		 
+		Graph graph = new Graph();
+		 
+		graph.addNode(nodeA);
+		graph.addNode(nodeB);
+		graph.addNode(nodeC);
+		graph.addNode(nodeD);
+		graph.addNode(nodeE);
+		graph.addNode(nodeF);
+		 
+		graph = Dijkstra.calculateShortestPathFromSource(graph, nodeA);
+		
+		System.out.println(graph.nodes.toString());	
+		*/
 		
 		//Clearing info file
 		try {

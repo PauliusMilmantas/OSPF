@@ -1,2 +1,1 @@
-IP: null
-PORT: 95
+PORT: 0
