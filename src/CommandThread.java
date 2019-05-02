@@ -80,6 +80,9 @@ public class CommandThread extends Thread {
 						}
 					}
 					break;
+				case "cal":
+					router.recalculate();
+					break;
 				case "d":
 					router.DEBUG = !router.DEBUG;
 					if(router.DEBUG) System.out.println("Debug mode is ON");

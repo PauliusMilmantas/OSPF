@@ -175,8 +175,11 @@ public class Table {
 	/**
 	 * Uses Dijkstra to calculate all hops
 	 * saves changes to table
+	 * null = 2147483647
+	 * @return Graph with calculated distances
+	 * Graph.Nodes.ToString() - To string
 	 */
-	public void recalculateDistances() {
+	public Graph recalculateDistances() {
 		
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir") + "\\Storage\\" + RID + "\\info.txt")));
@@ -219,8 +222,6 @@ public class Table {
 								
 								B.addDestination(A, 1);
 								A.addDestination(B, 1);
-								
-								System.out.println(B.getName() + " " + A.getName());
 							}					
 						
 							ff = readerrr.readLine();
@@ -240,16 +241,15 @@ public class Table {
 			
 			graph = Dijkstra.calculateShortestPathFromSource(graph, map.get(RID));
 			
-			/*
-			System.out.println("Source: " + map.get(RID).getName());
-			System.out.println(graph.nodes.toString());	
-			*/
-			
-			
+			//System.out.println(graph.nodes.toString());	
 			
 			reader.close();
+			
+			return graph;
 		} catch (IOException e) {
 			e.printStackTrace();
+			
+			return null;
 		}
 	}
 	

@@ -209,7 +209,7 @@ public class InputHandler extends Thread {
 										connectionTable.removeRouter(line.split(" ")[1]);
 										
 										if(router.DEBUG) System.out.println("[DEBUG] Recalculating distances.");
-										connectionTable.table.recalculateDistances();
+										router.recalculate();
 									}
 								}
 							break;

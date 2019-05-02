@@ -19,7 +19,7 @@ public class Node {
     }
   
     public String toString() {
-    	return name + " " + distance;
+    	return name + "-" + distance;
     }
     
     public Node(String name) {
