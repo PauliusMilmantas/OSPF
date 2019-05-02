@@ -105,7 +105,7 @@ public class Router {
 					
 					int min = 100;
 					for(int c = 0; c < table.getNeighbours().size(); c++) {
-						//System.out.println("Analysing neighb.: " + table.getNeighbours().get(c));
+						System.out.println("Analysing neighb.: " + table.getNeighbours().get(c));
 						
 						Table tt = new Table();
 						tt.setRID(table.getNeighbours().get(c));
@@ -119,7 +119,7 @@ public class Router {
 							if(sdfh[l].split("-")[0].equals(gh[0])) {
 								String dd = sdfh[l].split("-")[1];
 								
-								//System.out.println("Found distance " + table.getNeighbours().get(c) + "-" + gh[0] + " " + Integer.parseInt(dd));
+								System.out.println("Found distance " + table.getNeighbours().get(c) + "-" + gh[0] + " " + Integer.parseInt(dd));
 								
 								if(Integer.parseInt(dd) < min) {
 									min = Integer.parseInt(dd);

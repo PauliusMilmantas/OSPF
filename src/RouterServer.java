@@ -36,7 +36,7 @@ public class RouterServer extends Thread {
 					list.get(a).setSocket(ss);
 					
 					new OutputHandler(router, list.get(a));
-					list.get(a).getOutputHandler().sendMessage("Hello " + router.RID);
+					list.get(a).getOutputHandler().sendMessage("Hello " + router.RID + " " + router.table.ipList.size());
 
 					list.get(a).setSocket(ss);
 				} catch (IOException e) { //Couldn't connect
@@ -52,14 +52,14 @@ public class RouterServer extends Thread {
 						list.get(a).setSocket(ss);
 						
 						new OutputHandler(router, list.get(a));
-						list.get(a).getOutputHandler().sendMessage("Hello " + router.RID);	
+						list.get(a).getOutputHandler().sendMessage("Hello " + router.RID + " " + router.table.ipList.size());	
 					} catch (UnknownHostException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
 						//e.printStackTrace();
 					}				
 				} else {
-					list.get(a).getOutputHandler().sendMessage("Hello " + router.RID);
+					list.get(a).getOutputHandler().sendMessage("Hello " + router.RID + " " + router.table.ipList.size());
 				}
 			}
 		}

@@ -27,6 +27,9 @@ public class InputHandler extends Thread {
 	private ConnectionTable connectionTable;
 	private Router router;
 	
+	private boolean welcomed = false;
+	private String welcomedBy = "";
+	
 	public static boolean printTable = true;
 	
 	public InputHandler(Socket socket, Router router) {
@@ -103,12 +106,20 @@ public class InputHandler extends Thread {
 								
 										if(router.DEBUG) System.out.println("[DEBUG] New router detected " + RID);
 										
+										router.client.sendMessage(RID, " Welcome " + router.RID);
 										router.client.sendTable(RID);
 									}
 								}
-								
 							}
-								
+							/*
+							if(Integer.parseInt(line.split(" ")[2]) < router.table.RIDs.size()) {
+								router.client.sendTable(line.split(" ")[1]);
+							}
+							*/
+							break;
+						case "Welcome":
+							welcomed = true;
+							welcomedBy = line.split(" ")[1];
 							break;
 						case "LSU":
 								if(line.split(" ")[1].equals("TABLE")) {
@@ -184,7 +195,7 @@ public class InputHandler extends Thread {
 										for(int a = 0; a < tmpTable.getRIDs().size(); a++) {						
 											if(rids.size() < tmpTable.getRIDs().size()) {
 												change = true;
-												System.out.println("CHANGE " + rids.size() + " " + tmpTable.getRIDs().size());
+												//System.out.println("CHANGE " + rids.size() + " " + tmpTable.getRIDs().size());
 											}
 										}
 										
@@ -204,17 +215,27 @@ public class InputHandler extends Thread {
 											}
 											
 											router.recalculate();
-											/*
+											
 											//Sending to others
+											/*
 											for(int a = 0; a < connectionTable.table.getNeighbours().size(); a++) {
 												router.client.sendTable(connectionTable.table.getNeighbours().get(a), connectionTable.table);
 											}*/
 										}
 										
 										change = false;
-										
 									} else {
 										router.client.sendTable(line.split(" ")[3], t);
+									}
+									
+									if(welcomed) {
+										welcomed = false;
+										
+										for(int a = 0; a < router.table.RIDs.size(); a++) {
+											if(!router.table.RIDs.get(a).equals(welcomedBy)) {
+												router.client.sendTable(router.table.RIDs.get(a));
+											}
+										}
 									}
 								} else {	//For remove/adding router to table
 									if(line.split(" ")[2].equals("0")) {	//Remove router
