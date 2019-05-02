@@ -264,7 +264,7 @@ public class InputHandler extends Thread {
 											}*/
 										}
 										
-										//router.recalculate();
+										router.recalculate();
 										
 										change = false;
 									} else {
@@ -287,9 +287,10 @@ public class InputHandler extends Thread {
 										//if(router.DEBUG) System.out.println("[DEBUG] Recalculating distances.");
 										//router.recalculate();
 										
-										for(int a = 0; a < router.table.RIDs.size(); a++) {
-											router.client.sendTable(router.table.RIDs.get(a));
-										}
+										//for(int a = 0; a < router.table.RIDs.size(); a++) {
+											//router.client.sendTable(router.table.RIDs.get(a));
+											//router.client.sendMessage(router.table.RIDs.get(a), "LSU " + line.split(" ")[2] + " 0");
+										//}
 									} else if(line.split(" ")[2].equals("3")) {	//Remove link
 										router.removeLink(line.split(" ")[1], true);
 									} else if(line.split(" ")[2].equals("1")) { //Add link

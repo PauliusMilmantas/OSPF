@@ -76,6 +76,7 @@ public class Router {
 		String line = graph.nodes.toString().substring(1, graph.nodes.toString().length() - 1);
 		//System.out.println("Analysing: " + line);
 		String args[] = line.split(", ");
+		boolean deleted = false;
 		
 		for(int a = 0; a < args.length; a++) {
 			boolean found = false;
@@ -133,6 +134,7 @@ public class Router {
 				if(found) {
 					if(DEBUG) System.out.println(gh[0] + " was removed");
 					
+					deleted = true;
 					int g = table.RIDs.indexOf(gh[0]);
 					table.RIDs.remove(g);
 					table.ipList.remove(g);
@@ -150,8 +152,10 @@ public class Router {
 		}
 		
 		//Sending LSU
-		for(int a = 0; a < table.RIDs.size(); a++) {
-			//client.sendTable(table.RIDs.get(a));
+		if(deleted) {
+			for(int a = 0; a < table.RIDs.size(); a++) {
+				client.sendTable(table.RIDs.get(a));
+			}
 		}
 	}
 	
@@ -169,6 +173,11 @@ public class Router {
 		for(int a = 0; a < connectionTable.timeoutThreads.size(); a++) {
 			if(connectionTable.timeoutThreads.get(a).client.getRID().equals(RID)) {
 				connectionTable.timeoutThreads.get(a).cancel();
+			}
+		}
+		
+		for(int a = 0; a < client.connectionTable.timeoutThreads.size(); a++) {
+			if(client.connectionTable.timeoutThreads.get(a).client.getRID().equals(RID)) {
 				client.connectionTable.timeoutThreads.get(a).cancel();
 			}
 		}
