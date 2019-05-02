@@ -112,13 +112,15 @@ public class Table {
 			reader = new BufferedReader(new FileReader(new File(path)));
 			
 			String line = reader.readLine();
-			String tr[] = line.split(" ");
 			
-			for(int a = 0; a < 2; a++) {
-				if(tr[0].equals("IP:")) ip = tr[1];
-				else if(tr[0].equals("PORT:")) port = Integer.parseInt(tr[1]);
+			if(line != null) {
+				String tr[] = line.split(" ");
+				
+				for(int a = 0; a < 2; a++) {
+					if(tr[0].equals("IP:")) ip = tr[1];
+					else if(tr[0].equals("PORT:")) port = Integer.parseInt(tr[1]);
+				}
 			}
-			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -292,6 +292,12 @@ public class InputHandler extends Thread {
 										}
 									} else if(line.split(" ")[2].equals("3")) {	//Remove link
 										router.removeLink(line.split(" ")[1], true);
+									} else if(line.split(" ")[2].equals("1")) { //Add link
+										String rid = line.split(" ")[1];
+										String ip = line.split(" ")[3];
+										int port = Integer.parseInt(line.split(" ")[4]);
+										
+										router.addLink(rid, ip, port, 1, true);
 									}
 								}
 							break;

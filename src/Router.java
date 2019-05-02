@@ -213,9 +213,18 @@ public class Router {
 		}
 	}
 	
-	public void addLink(String RID, String ip, int port, int hop) {
+	/**
+	 * 
+	 * @param RID
+	 * @param ip
+	 * @param port
+	 * @param hop
+	 * @param from False: from commandThread, True: from socket
+	 */
+	public void addLink(String RID, String ip, int port, int hop, boolean from) {
 		client.connectionTable.addLink(RID);
 		table.addLink(RID, ip, port, hop);
+		connectionTable.addLink(RID);
 		
 		server.connectionTable.addLink(RID);
 		
@@ -223,10 +232,26 @@ public class Router {
 			sleepForSecond();
 		}
 		
-		client.sendMessage(RID, "Hello " + this.RID + " new " + this.ip + ":" + this.port);
-		client.sendTable(RID);
+		Client cl = new Client(RID, ip, port);
+		connectionTable.clients.add(cl);
+		new OutputHandler(this, cl);
+		Timer t = new Timer();
+		connectionTable.timers.add(t);
+		TimeoutThread tt = new TimeoutThread(cl, this);
+		t.schedule(tt, 3000, 3000);
+		
+		recalculate();
+		
+		table.nextHop.set(table.RIDs.indexOf(RID), RID);
+		table.hops.set(table.RIDs.indexOf(RID), 1);
+		
+		if(!from) cl.getOutputHandler().sendMessage("LSU " + this.RID + " 1 " + this.ip + " " + this.port);
 		
 		if(DEBUG) System.out.println("[DEBUG] Link added.");
+		
+		for(int a = 0; a < table.RIDs.size(); a++) {
+			client.sendTable(table.RIDs.get(a));
+		}		
 	}
 	
 	private void sleepForSecond() {

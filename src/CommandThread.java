@@ -62,7 +62,7 @@ public class CommandThread extends Thread {
 					break;
 				case "addLink":
 					//RID, ip, port, hops
-					router.addLink(line.split(" ")[1], line.split(" ")[2], Integer.parseInt(line.split(" ")[3]), 1);
+					router.addLink(line.split(" ")[1], line.split(" ")[2], Integer.parseInt(line.split(" ")[3]), 1, false);
 					break;
 				case "message":
 					String RID = line.split(" ")[1];
@@ -70,6 +70,12 @@ public class CommandThread extends Thread {
 					msg = router.RID + ": " + msg;
 					
 					router.client.sendOverNetwork(RID, msg);
+					break;
+				case "bc":
+					System.out.println("Boardcasting...");
+					for(int a = 0; a < router.table.RIDs.size(); a++) {
+						router.client.sendTable(router.table.RIDs.get(a));
+					}					
 					break;
 				case "s":
 					if(!router.client.messages.isEmpty()) {

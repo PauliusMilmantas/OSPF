@@ -15,7 +15,7 @@ public class ConnectionTable {
 	/**
 	 * For TimeoutThread
 	 */
-	private ArrayList<Timer> timers;
+	public ArrayList<Timer> timers;
 	public ArrayList<TimeoutThread> timeoutThreads;
 	public Table table;
 	
