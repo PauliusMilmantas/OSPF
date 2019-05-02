@@ -219,6 +219,10 @@ public class InputHandler extends Thread {
 										
 										if(router.DEBUG) System.out.println("[DEBUG] Recalculating distances.");
 										router.recalculate();
+										
+										for(int a = 0; a < router.table.RIDs.size(); a++) {
+											router.client.sendTable(router.table.RIDs.get(a));
+										}
 									}
 								}
 							break;

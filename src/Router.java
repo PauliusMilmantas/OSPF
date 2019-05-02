@@ -93,28 +93,31 @@ public class Router {
 			String gh[] = args[a].split("-");
 			for(int b = 0; b < table.RIDs.size(); b++) {
 				if(table.RIDs.get(b).equals(gh[0])) {
+					id = b;
 					found = true;
+					dist = Integer.parseInt(gh[1]);
 					table.hops.set(b, Integer.parseInt(gh[1]));	
 				}			
 			}
 			
-			//if(Integer.parseInt(gh[1]) == 2147483647) {
-			if(gh.length < 1) {
-				if(DEBUG) System.out.println(gh[0] + " was removed");
-				
-				int g = table.RIDs.indexOf(gh[0]);
-				table.RIDs.remove(g);
-				table.ipList.remove(g);
-				table.nextHop.remove(g);
-				table.hops.remove(g);
-				table.ports.remove(g);
+			
+			
+			if(dist == 2147483647) {
+				if(found) {
+					if(DEBUG) System.out.println(gh[0] + " was removed");
+					
+					int g = table.RIDs.indexOf(gh[0]);
+					table.RIDs.remove(g);
+					table.ipList.remove(g);
+					table.nextHop.remove(g);
+					table.hops.remove(g);
+					table.ports.remove(g);
+				}
 			} else {
 				if(found) {
 					//System.out.println(gh[0] + " found");
 				} else {
 					//System.out.println(gh[0] + " not found");
-					
-					
 				}	
 			}	
 		}		
