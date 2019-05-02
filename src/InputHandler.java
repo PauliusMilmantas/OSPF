@@ -27,9 +27,6 @@ public class InputHandler extends Thread {
 	private ConnectionTable connectionTable;
 	private Router router;
 	
-	private boolean waitingToResend = false;
-	private String waitingFor; //Table RID
-	
 	public static boolean printTable = true;
 	
 	public InputHandler(Socket socket, Router router) {
@@ -39,6 +36,19 @@ public class InputHandler extends Thread {
 		
 		try {
 			reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		FileWriter writerd;
+		try {
+			writerd = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt", true);
+			
+			for(int a = 0; a < router.table.getRIDs().size(); a++) {
+				writerd.write(router.table.getRIDs().get(a) + "\n");
+			}
+			
+			writerd.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -138,12 +148,14 @@ public class InputHandler extends Thread {
 											RID = info[4];
 											nextHop = info[5];
 											
+											FileWriter writerd = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt", true);
+											writerd.write(RID + "\n");
+											writerd.close();
+											
 											try {
 												hops = Integer.parseInt(info[6]);
 											} catch(Exception e) {
-												hops = Integer.parseInt(info[6].substring(0, info[6].length()-3));
-						
-												
+												hops = Integer.parseInt(info[6].substring(0, info[6].length()-3));								
 											}
 											
 											FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt", true); //the true will append the new data
@@ -152,8 +164,6 @@ public class InputHandler extends Thread {
 										}
 									} 
 								} else if(line.split(" ")[1].equals("ENDTABLE")) {
-									
-									router.amountOfEndTables++;
 									
 									Table t = new Table();
 									t.readTable(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt");
@@ -168,7 +178,6 @@ public class InputHandler extends Thread {
 										
 										if(printTable) tmpTable.seer();
 										
-										boolean changed = false;
 										ArrayList<String> rids = connectionTable.table.getRIDs();
 									
 										boolean change = false;

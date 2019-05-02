@@ -17,7 +17,7 @@ public class Router {
 	public RouterServer server;
 	
 	public ConnectionTable connectionTable;
-	private Table table;
+	public Table table;
 	
 	public int amountOfEndTables = 0;
 	
@@ -82,46 +82,42 @@ public class Router {
 		if(DEBUG) System.out.println("[DEBUG] Recalculating distances...");
 		
 		Graph graph = table.recalculateDistances();
-		String line = graph.nodes.toString().substring(0, graph.nodes.toString().length() - 1);
+		String line = graph.nodes.toString().substring(1, graph.nodes.toString().length() - 1);
 		String args[] = line.split(", ");
 		
-		for(int a = 0; a > args.length; a++) {
-			System.out.println(args[a]);
-		}
-		
-		/*
-		public ArrayList<String> RIDs;
-		public ArrayList<String> ipList;
-		public ArrayList<String> nextHop;
-		public ArrayList<Integer> hops;
-		public ArrayList<Integer> ports;
-		*/
-		
-		for(int a = 0; a < table.getRIDs().size(); a++) {
+		for(int a = 0; a < args.length; a++) {
 			boolean found = false;
 			int dist = 0;
 			int id = 0;
 			
-			for(int b = 0; b < args.length; b++) {
-				String rr[] = args[b].split("-");
-				
-				if(rr[0].equals(table.getRIDs().get(a))) {
+			String gh[] = args[a].split("-");
+			for(int b = 0; b < table.RIDs.size(); b++) {
+				if(table.RIDs.get(b).equals(gh[0])) {
 					found = true;
-					dist = Integer.parseInt(rr[1]);
-					id = a;
-				}
+					table.hops.set(b, Integer.parseInt(gh[1]));	
+				}			
 			}
 			
-			if(found) {
-				table.hops.set(id, dist);
+			//if(Integer.parseInt(gh[1]) == 2147483647) {
+			if(gh.length < 1) {
+				if(DEBUG) System.out.println(gh[0] + " was removed");
+				
+				int g = table.RIDs.indexOf(gh[0]);
+				table.RIDs.remove(g);
+				table.ipList.remove(g);
+				table.nextHop.remove(g);
+				table.hops.remove(g);
+				table.ports.remove(g);
 			} else {
-				table.RIDs.remove(a);
-				table.ipList.remove(a);
-				table.nextHop.remove(a);
-				table.hops.remove(a);
-				table.ports.remove(a);
-			}
-		}
+				if(found) {
+					//System.out.println(gh[0] + " found");
+				} else {
+					//System.out.println(gh[0] + " not found");
+					
+					
+				}	
+			}	
+		}		
 	}
 	
 	public void addLink(String RID, String ip, int port, int hop) {
