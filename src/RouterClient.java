@@ -73,6 +73,11 @@ public class RouterClient extends Thread {
 		}
 	}
 	
+	/**
+	 * Sending plain message.
+	 * @param DestinationRID
+	 * @param message
+	 */
 	public void sendMessage(String DestinationRID, String message) {
 		
 		if(router.DEBUG) 
@@ -98,9 +103,11 @@ public class RouterClient extends Thread {
 	
 	/**
 	 * Sends given routing table to destination RID
+	 * 
 	 * @param DestinationRID
+	 * update - send your own table to destination and forward another one
 	 */
-	public void sendTable(String DestinationRID, Table table) {
+	public void sendTable(String DestinationRID, Table table, boolean update) {
 		if(router.DEBUG) 
 			System.out.println("[OUT][" + DestinationRID + "] LSU TABLE");
 		
@@ -141,10 +148,16 @@ public class RouterClient extends Thread {
 				handler.sendMessage("LSU ENDTABLE " + table.getRID() + " " + DestinationRID);
 			}
 		}
+		
+		if(update) sendTable(DestinationRID, router.table, false);
+	}
+	
+	public void sendTable(String DestinationRID, boolean update) {
+		sendTable(DestinationRID, router.getTable(), update);
 	}
 	
 	public void sendTable(String DestinationRID) {
-		sendTable(DestinationRID, router.getTable());
+		sendTable(DestinationRID, router.getTable(), false);
 	}
 
 	private void sleepForSecond() {

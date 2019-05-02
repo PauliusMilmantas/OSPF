@@ -3,7 +3,7 @@ import java.util.TimerTask;
 
 public class TimeoutThread extends TimerTask {
 
-	Client client;
+	public Client client;
 	Router router;
 	
 	public TimeoutThread(Client client, Router router) {

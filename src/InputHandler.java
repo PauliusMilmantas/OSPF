@@ -69,57 +69,81 @@ public class InputHandler extends Thread {
 					
 					switch(line.split(" ")[0]) {					
 						case "Hello":
-							boolean found = false;
-							
-							ArrayList<Client> clients = connectionTable.getClients();
-							
-							for(int a = 0; a < clients.size(); a++) {
-								Client client = clients.get(a);
+							//if(line.split(" ").length == 1) {
+								boolean found = false;
 								
-								if(client.getRID().equals(line.split(" ")[1].split("\t")[0])) {
-									client.setTime(new Timestamp(System.currentTimeMillis()));
+								ArrayList<Client> clients = connectionTable.getClients();
+								
+								for(int a = 0; a < clients.size(); a++) {
+									Client client = clients.get(a);
 									
-									found = true;
-									
-									if(client.getConnectionStatus() != 1) {
-										client.setConnectionStatus(1);
-										client.setInputHandler(this);
-										client.setSocket(socket);
+									if(client.getRID().equals(line.split(" ")[1].split("\t")[0])) {
+										client.setTime(new Timestamp(System.currentTimeMillis()));
+										
+										found = true;
+										
+										if(client.getConnectionStatus() != 1) {
+											client.setConnectionStatus(1);
+											client.setInputHandler(this);
+											client.setSocket(socket);
+										}
 									}
 								}
-							}
-							
-							if(!found) { //New router
-								String args[] = line.split(" ");
-
-								if(args.length > 2) {
-									if(args[2].equals("new")) {
+								
+								if(!found) { //New router
+									String args[] = line.split(" ");
+	
+									if(args.length > 2) {
+										if(args[2].equals("new")) {
+											String RID = args[1];
+											String ip = args[3].split(":")[0];
+											int port = Integer.parseInt(args[3].split(":")[1]);
+	
+											connectionTable.addLink(RID);
+											connectionTable.table.addLink(RID, ip, port, 1);
+											
+											router.server.connectionTable.addLink(RID);
+											router.server.connectionTable.table.addLink(RID, ip, port, 1);
+									
+											if(router.DEBUG) System.out.println("[DEBUG] New router detected " + RID);
+											
+											router.client.sendMessage(RID, "Welcome " + router.RID);
+											router.client.sendTable(RID);
+										}
+									} else {	//Naudojamas...?
 										String RID = args[1];
 										String ip = args[3].split(":")[0];
 										int port = Integer.parseInt(args[3].split(":")[1]);
-
-										connectionTable.addLink(RID);
+										
 										connectionTable.table.addLink(RID, ip, port, 1);
 										
-										router.server.connectionTable.addLink(RID);
 										router.server.connectionTable.table.addLink(RID, ip, port, 1);
-								
-										if(router.DEBUG) System.out.println("[DEBUG] New router detected " + RID);
 										
-										router.client.sendMessage(RID, " Welcome " + router.RID);
 										router.client.sendTable(RID);
 									}
 								}
-							}
-							/*
-							if(Integer.parseInt(line.split(" ")[2]) < router.table.RIDs.size()) {
-								router.client.sendTable(line.split(" ")[1]);
-							}
-							*/
+						/*	} else {
+								String dst = line.split(" ")[2];
+								
+								if(!dst.equals(router.RID)) {
+									router.client.sendMessage(dst, line);
+								} else {
+									String RID = line.split(" ")[1];
+									String IP = line.split(" ")[2].split(":")[0];
+									String port = line.split(" ")[2].split(":")[1];
+									
+																		
+								}
+							}*/
 							break;
 						case "Welcome":
 							welcomed = true;
 							welcomedBy = line.split(" ")[1];
+							
+							for(int a = 0; a < router.table.RIDs.size(); a++) {
+								router.client.sendTable(router.table.RIDs.get(a), true);
+							}
+							
 							break;
 						case "LSU":
 								if(line.split(" ")[1].equals("TABLE")) {
@@ -176,10 +200,27 @@ public class InputHandler extends Thread {
 									} 
 								} else if(line.split(" ")[1].equals("ENDTABLE")) {
 									
+									//handler.sendMessage("LSU ENDTABLE " + table.getRID() + " " + DestinationRID);
+									//if(line.split(" ").length > 3) {
+									/*
+									try {	
+										if(line.split(" ")[4].equals("UPDATE")) {
+											if(router.DEBUG) System.out.println("[DEBUG] Sending table to " + line.split(" ")[4]);
+											router.client.sendTable(line.split(" ")[3], true);
+										}
+									} catch(Exception e) {
+										
+									}*/
+									//}
+									
+									
 									Table t = new Table();
 									t.readTable(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt");
 									t.setRID(line.split(" ")[2]);
-									t.getAdittionalInfo(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt");
+									
+									if(new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt").exists()) {
+										t.getAdittionalInfo(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".info.txt");
+									}
 									
 									if(line.split(" ")[3].equals(router.RID)) { //Reached destination										
 										Table tmpTable = new Table();
@@ -214,7 +255,7 @@ public class InputHandler extends Thread {
 												}
 											}
 											
-											router.recalculate();
+											//router.recalculate();
 											
 											//Sending to others
 											/*
@@ -223,9 +264,11 @@ public class InputHandler extends Thread {
 											}*/
 										}
 										
+										//router.recalculate();
+										
 										change = false;
 									} else {
-										router.client.sendTable(line.split(" ")[3], t);
+										router.client.sendTable(line.split(" ")[3], t, false);
 									}
 									
 									if(welcomed) {
@@ -241,12 +284,14 @@ public class InputHandler extends Thread {
 									if(line.split(" ")[2].equals("0")) {	//Remove router
 										connectionTable.removeRouter(line.split(" ")[1]);
 										
-										if(router.DEBUG) System.out.println("[DEBUG] Recalculating distances.");
-										router.recalculate();
+										//if(router.DEBUG) System.out.println("[DEBUG] Recalculating distances.");
+										//router.recalculate();
 										
 										for(int a = 0; a < router.table.RIDs.size(); a++) {
 											router.client.sendTable(router.table.RIDs.get(a));
 										}
+									} else if(line.split(" ")[2].equals("3")) {	//Remove link
+										router.removeLink(line.split(" ")[1], true);
 									}
 								}
 							break;

@@ -42,15 +42,6 @@ public class Router {
 		table.readTable();
 		connectionTable = new ConnectionTable(table, this);
 		
-		/*
-		table.setRID("192.168.1.104");
-		table.readTable("/Storage/192.168.1.101/192.168.1.104.txt");
-		//table.getAdittionalInfo("Storage/192.168.1.101/192.168.1.103.info.txt");
-		Graph gr = connectionTable.table.recalculateDistances();
-		
-		System.out.println(gr.nodes.toString());
-		*/
-		
 		//Clearing info file
 		try {
 			File file = new File(System.getProperty("user.dir") + "\\Storage\\" + RID);
@@ -83,7 +74,7 @@ public class Router {
 		
 		Graph graph = table.recalculateDistances();
 		String line = graph.nodes.toString().substring(1, graph.nodes.toString().length() - 1);
-		System.out.println("Analysing: " + line);
+		//System.out.println("Analysing: " + line);
 		String args[] = line.split(", ");
 		
 		for(int a = 0; a < args.length; a++) {
@@ -94,7 +85,7 @@ public class Router {
 			String gh[] = args[a].split("-");
 			for(int b = 0; b < table.RIDs.size(); b++) {
 				if(table.RIDs.get(b).equals(gh[0])) {
-					System.out.println("Analysin destination: " + gh[0]);
+					//System.out.println("Analysing destination: " + gh[0]);
 					id = b;
 					found = true;
 					dist = Integer.parseInt(gh[1]);
@@ -105,7 +96,7 @@ public class Router {
 					
 					int min = 100;
 					for(int c = 0; c < table.getNeighbours().size(); c++) {
-						System.out.println("Analysing neighb.: " + table.getNeighbours().get(c));
+						//System.out.println("Analysing neighb.: " + table.getNeighbours().get(c));
 						
 						Table tt = new Table();
 						tt.setRID(table.getNeighbours().get(c));
@@ -119,7 +110,7 @@ public class Router {
 							if(sdfh[l].split("-")[0].equals(gh[0])) {
 								String dd = sdfh[l].split("-")[1];
 								
-								System.out.println("Found distance " + table.getNeighbours().get(c) + "-" + gh[0] + " " + Integer.parseInt(dd));
+								//System.out.println("Found distance " + table.getNeighbours().get(c) + "-" + gh[0] + " " + Integer.parseInt(dd));
 								
 								if(Integer.parseInt(dd) < min) {
 									min = Integer.parseInt(dd);
@@ -160,7 +151,65 @@ public class Router {
 		
 		//Sending LSU
 		for(int a = 0; a < table.RIDs.size(); a++) {
-			client.sendTable(table.RIDs.get(a));
+			//client.sendTable(table.RIDs.get(a));
+		}
+	}
+	
+	/**
+	 * Removes link router.rid - destDir
+	 * @param destDir
+	 * @param received - true: received from inputHandler, false: from CommandThread
+	 */
+	public void removeLink(String RID, boolean received) {
+		if(DEBUG) System.out.println("Removed link: " + this.RID + "-" + RID);
+		
+		if(!received) client.sendMessage(RID, "LSU " + this.RID + " 3"); //LSU to remove link
+		
+		//Stopping TimeOutThreads
+		for(int a = 0; a < connectionTable.timeoutThreads.size(); a++) {
+			if(connectionTable.timeoutThreads.get(a).client.getRID().equals(RID)) {
+				connectionTable.timeoutThreads.get(a).cancel();
+				client.connectionTable.timeoutThreads.get(a).cancel();
+			}
+		}
+		
+		//Removing from clients
+		for(int a = 0; a < connectionTable.clients.size(); a++) {
+			if(connectionTable.clients.get(a).getRID().equals(RID)) {
+				connectionTable.clients.get(a).close();
+				connectionTable.clients.remove(a);
+			}
+		}
+		
+		for(int a = 0; a < client.connectionTable.clients.size(); a++) {
+			if(client.connectionTable.clients.get(a).getRID().equals(RID)) {
+				client.connectionTable.clients.get(a).close();
+				client.connectionTable.clients.remove(a);
+			}
+		}
+		
+		//Remove from storage
+		File ff = new File(System.getProperty("user.dir") + "\\Storage\\" + this.RID + "\\" + RID + ".txt");
+		ff.delete();
+		
+		//connectionTable.removeRouter(RID);
+		//client.connectionTable.removeRouter(RID);
+		
+		Graph graph = table.recalculateDistances();
+		String dfg = graph.nodes.toString().substring(1, graph.nodes.toString().length() - 1);
+		String sdfh[] = dfg.split(", ");
+		
+		for(int a = 0; a < sdfh.length; a++) {
+			if(RID.equals(sdfh[a].split("-")[0])) {
+				table.hops.set(table.RIDs.indexOf(RID), Integer.parseInt(sdfh[a].split("-")[1]));
+			}			
+		}
+		
+		recalculate();
+	
+		//Sending LSU to everyone
+		for(int a = 0; a < table.RIDs.size(); a++) {
+			client.sendTable(table.RIDs.get(a), false);
 		}
 	}
 	

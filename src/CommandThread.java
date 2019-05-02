@@ -32,7 +32,17 @@ public class CommandThread extends Thread {
 			
 			switch(line.split(" ")[0]) {
 				case "sendt":
-					router.client.sendTable(line.split(" ")[1]);
+					try {
+						if(line.split(" ")[2].equals("true")) router.client.sendTable(line.split(" ")[1], true);
+						else router.client.sendTable(line.split(" ")[1], false);
+					} catch(Exception e) {
+						router.client.sendTable(line.split(" ")[1], false);
+					}
+					break;
+				case "gett":
+					String dest = line.split(" ")[1];
+					
+					router.client.sendMessage(dest, "LSR " + router.RID + " " + dest);
 					break;
 				case "q":
 					finished.set(true);
@@ -47,7 +57,6 @@ public class CommandThread extends Thread {
 					break;
 				case "see":
 					if(line.equals("see all routers")) {
-						router.amountOfEndTables = 0;
 						router.client.printAllTables();
 					}
 					break;
@@ -80,9 +89,17 @@ public class CommandThread extends Thread {
 						}
 					}
 					break;
+				case "remLink":
+					String src = line.split(" ")[1];
+					
+					router.removeLink(src, false);
+					break;
 				case "cal":
 					router.recalculate();
 					break;
+				/*case "send":
+					router.client.sendMessage(line.split(" ")[1], line.substring(line.split(" ")[1].length() + 6, line.length()));
+					break;*/
 				case "d":
 					router.DEBUG = !router.DEBUG;
 					if(router.DEBUG) System.out.println("Debug mode is ON");
@@ -90,14 +107,16 @@ public class CommandThread extends Thread {
 					break;
 				case "help":
 					System.out.println("-------========== H E L P ==================-------");
-					System.out.println("q - quit");
 					System.out.println("seer - See routing table");
 					System.out.println("addLink [RID] [ip] [port] - add link");
-					System.out.println("status - Show status for all neighbours");
-					System.out.println("d - Change DEBUG mode");
+					System.out.println("remLink [RID] - remove link");				
 					System.out.println("sendt [Destination RID] - send table to destination RID");
+					System.out.println("gett [RID] - get routing table");
 					System.out.println("see all routers - print all routing tables");
 					System.out.println("message [Destination RID] [text] - send message to RID");
+					System.out.println("status - Show status for all neighbours");
+					System.out.println("d - Change DEBUG mode");
+					System.out.println("q - quit");
 					System.out.println("-------=====================================-------");
 					break;
 				default:

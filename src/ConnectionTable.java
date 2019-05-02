@@ -10,12 +10,13 @@ import java.util.Timer;
 
 public class ConnectionTable {
 
-	private ArrayList<Client> clients;
+	public ArrayList<Client> clients;
 	
 	/**
 	 * For TimeoutThread
 	 */
 	private ArrayList<Timer> timers;
+	public ArrayList<TimeoutThread> timeoutThreads;
 	public Table table;
 	
 	private Router router;
@@ -27,6 +28,8 @@ public class ConnectionTable {
 		clients = new ArrayList<>();
 		timers = new ArrayList<>();
 		
+		timeoutThreads = new ArrayList<>();
+		
 		ArrayList<String> nb = table.getNeighbours();
 		for(int a = 0; a < nb.size(); a++) {
 			Client cl = new Client(nb.get(a), table.getIp(nb.get(a)), table.getPort(nb.get(a)));
@@ -36,7 +39,9 @@ public class ConnectionTable {
 			
 			Timer t = new Timer();
 			timers.add(t);
-			t.schedule(new TimeoutThread(cl, router), 3000, 3000);
+			TimeoutThread tt = new TimeoutThread(cl, router);
+			timeoutThreads.add(tt);
+			t.schedule(tt, 3000, 3000);
 		}
 	}
 	
@@ -80,7 +85,7 @@ public class ConnectionTable {
 		}
 	}
 	
-	public void removeRouter(String RID) {	
+	public void removeRouter(String RID) {
 		if(table.hasRouter(RID)) {
 			table.removeRouter(RID);
 			
@@ -119,6 +124,8 @@ public class ConnectionTable {
 					clients.get(a).getOutputHandler().sendMessage("LSU " + RID + " 0");
 				}
 			}
+			
+			router.recalculate();
 		}
 	}
 	
