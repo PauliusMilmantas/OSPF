@@ -181,9 +181,10 @@ public class InputHandler extends Thread {
 										ArrayList<String> rids = connectionTable.table.getRIDs();
 									
 										boolean change = false;
-										for(int a = 0; a < tmpTable.getRIDs().size(); a++) {
-											if(!rids.contains(tmpTable.getRIDs().get(a)) && !tmpTable.getRIDs().get(a).equals(router.RID)) {
+										for(int a = 0; a < tmpTable.getRIDs().size(); a++) {						
+											if(rids.size() < tmpTable.getRIDs().size()) {
 												change = true;
+												System.out.println("CHANGE " + rids.size() + " " + tmpTable.getRIDs().size());
 											}
 										}
 										
@@ -202,10 +203,12 @@ public class InputHandler extends Thread {
 												}
 											}
 											
+											router.recalculate();
+											/*
 											//Sending to others
-											for(int a = 0; a < connectionTable.table.getRIDs().size(); a++) {
-												router.client.sendTable(connectionTable.table.getRIDs().get(a), connectionTable.table);
-											}
+											for(int a = 0; a < connectionTable.table.getNeighbours().size(); a++) {
+												router.client.sendTable(connectionTable.table.getNeighbours().get(a), connectionTable.table);
+											}*/
 										}
 										
 										change = false;
@@ -265,7 +268,8 @@ public class InputHandler extends Thread {
 				}
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();	//Connection reset
+			System.out.println("Host is down.");
 		}	
 	}
 	

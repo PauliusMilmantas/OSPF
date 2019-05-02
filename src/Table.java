@@ -240,9 +240,7 @@ public class Table {
 			}
 			
 			graph = Dijkstra.calculateShortestPathFromSource(graph, map.get(RID));
-			
-			//System.out.println(graph.nodes.toString());	
-			
+				
 			reader.close();
 			
 			return graph;
