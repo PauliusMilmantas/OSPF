@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -147,15 +148,19 @@ public class InputHandler extends Thread {
 							break;
 						case "LSU":
 								if(line.split(" ")[1].equals("TABLE")) {
-									if(line.split(" ")[2].equals("RID:")) {	//New table									
+									if(line.split(" ")[2].equals("RID:")) {	//New table		
 										File file = new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[3] + ".txt");
 										file.createNewFile();
+										
+										PrintWriter writer = new PrintWriter(file);
+										writer.print("");
+										writer.close();
 										
 										FileWriter writerd = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt", true);
 										writerd.write(line.split(" ")[3] + "\n");
 										writerd.close();
 										
-										PrintWriter writer = new PrintWriter(file);
+										writer = new PrintWriter(file);
 										writer.print("");
 										writer.close();
 										
@@ -192,10 +197,10 @@ public class InputHandler extends Thread {
 											} catch(Exception e) {
 												hops = Integer.parseInt(info[6].substring(0, info[6].length()-3));								
 											}
-											
+
 											FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt", true); //the true will append the new data
-										    fw.write(ip + ":" + port + "\t" + RID + "\t" + nextHop + "\t" + hops + "\n");//appends the string to the file
-										    fw.close();
+											fw.write(ip + ":" + port + "\t" + RID + "\t" + nextHop + "\t" + hops + "\n");//appends the string to the file
+											fw.close();
 										}
 									} 
 								} else if(line.split(" ")[1].equals("ENDTABLE")) {
@@ -308,7 +313,10 @@ public class InputHandler extends Thread {
 							
 							if(dest.equals(router.RID)) {
 								router.client.sendTable(source);
+								if(router.DEBUG) System.out.println("[DEBUG] Received LSR from " + source);
 							} else {	//Send it away
+								if(router.DEBUG) System.out.println("[DEBUG] Resending LSR to " + dest + " from " + source);
+								
 								ArrayList<Client> clientss = connectionTable.getClients();
 								
 								String nextHop = connectionTable.table.getNextHop(dest);

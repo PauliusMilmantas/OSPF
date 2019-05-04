@@ -72,9 +72,10 @@ public class CommandThread extends Thread {
 					router.client.sendOverNetwork(RID, msg);
 					break;
 				case "bc":
-					System.out.println("Boardcasting...");
+					System.out.println("Broadcasting...");
 					for(int a = 0; a < router.table.RIDs.size(); a++) {
 						router.client.sendTable(router.table.RIDs.get(a));
+						router.client.sendMessage(router.table.RIDs.get(a), "LSR " + router.RID + " " + router.table.RIDs.get(a));
 					}					
 					break;
 				case "s":

@@ -87,46 +87,54 @@ public class Router {
 			for(int b = 0; b < table.RIDs.size(); b++) {
 				if(table.RIDs.get(b).equals(gh[0])) {
 					//System.out.println("Analysing destination: " + gh[0]);
-					id = b;
-					found = true;
-					dist = Integer.parseInt(gh[1]);
-					table.hops.set(b, Integer.parseInt(gh[1]));
 					
-					//Next hop calculation
-					String nextRID = null;
-					
-					int min = 100;
-					for(int c = 0; c < table.getNeighbours().size(); c++) {
-						//System.out.println("Analysing neighb.: " + table.getNeighbours().get(c));
+					if(gh[1].equals("1")) {
+						//System.out.println(gh[0] + " is neighbour");
 						
-						Table tt = new Table();
-						tt.setRID(table.getNeighbours().get(c));
-						tt.readTable("Storage\\" + RID + "\\" + table.getNeighbours().get(c) + ".txt");
+						table.nextHop.set(b, gh[0]);
+						table.hops.set(b, 1);
+					} else {
+						id = b;
+						found = true;
+						dist = Integer.parseInt(gh[1]);
+						table.hops.set(b, Integer.parseInt(gh[1]));
 						
-						Graph g = tt.recalculateDistances();
-						String dfg = g.nodes.toString().substring(1, g.nodes.toString().length() - 1);
-						String sdfh[] = dfg.split(", ");
-		
-						for(int l = 0; l < sdfh.length; l++) {
-							if(sdfh[l].split("-")[0].equals(gh[0])) {
-								String dd = sdfh[l].split("-")[1];
-								
-								//System.out.println("Found distance " + table.getNeighbours().get(c) + "-" + gh[0] + " " + Integer.parseInt(dd));
-								
-								if(Integer.parseInt(dd) < min) {
-									min = Integer.parseInt(dd);
-									nextRID = table.getNeighbours().get(c);
+						//Next hop calculation
+						String nextRID = null;
+						
+						int min = 100;
+						for(int c = 0; c < table.getNeighbours().size(); c++) {
+							//System.out.println("Analysing neighb.: " + table.getNeighbours().get(c));
+							
+							Table tt = new Table();
+							tt.setRID(table.getNeighbours().get(c));
+							tt.readTable("Storage\\" + RID + "\\" + table.getNeighbours().get(c) + ".txt");
+							
+							Graph g = tt.recalculateDistances();
+							String dfg = g.nodes.toString().substring(1, g.nodes.toString().length() - 1);
+							String sdfh[] = dfg.split(", ");
+			
+							for(int l = 0; l < sdfh.length; l++) {
+								if(sdfh[l].split("-")[0].equals(gh[0])) {
+									String dd = sdfh[l].split("-")[1];
+									
+									//System.out.println("Found distance " + table.getNeighbours().get(c) + "-" + gh[0] + " " + Integer.parseInt(dd));
+									
+									if(Integer.parseInt(dd) < min && Integer.parseInt(dd) != 0) {
+										min = Integer.parseInt(dd);
+										nextRID = table.getNeighbours().get(c);
+									}
 								}
 							}
 						}
+						
+						//Neighbours....?
+						if(nextRID == null) nextRID = gh[0];
+						
+						//System.out.println("Selected: " + nextRID + " Distance: " + min);
+						
+						table.nextHop.set(b, nextRID);
 					}
-					
-					//Neighbours....?
-					if(nextRID == null) nextRID = gh[0];
-					
-					//System.out.println("Selected: " + nextRID + " Distance: " + min);
-					
-					table.nextHop.set(b, nextRID);
 				}			
 			}
 			
