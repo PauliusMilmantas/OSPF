@@ -188,19 +188,40 @@ public class InputHandler extends Thread {
 											RID = info[4];
 											nextHop = info[5];
 											
-											FileWriter writerd = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt", true);
-											writerd.write(RID + "\n");
-											writerd.close();
-											
 											try {
 												hops = Integer.parseInt(info[6]);
 											} catch(Exception e) {
 												hops = Integer.parseInt(info[6].substring(0, info[6].length()-3));								
 											}
-
-											FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt", true); //the true will append the new data
-											fw.write(ip + ":" + port + "\t" + RID + "\t" + nextHop + "\t" + hops + "\n");//appends the string to the file
-											fw.close();
+											
+											//Checking if line already exists in file
+											boolean founddd = false;
+											
+											if(new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt").exists()) {
+												BufferedReader reader = new BufferedReader(new FileReader(new File(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt")));
+												String htr = reader.readLine();
+												
+												
+												while(htr != null && !founddd) {
+													if(htr.equals(ip + ":" + port + "\t" + RID + "\t" + nextHop + "\t" + hops)) found = true;
+													
+													htr = reader.readLine();
+												}
+												
+												reader.close();
+											} else {
+												founddd = false;
+											}
+											
+											FileWriter writerd = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\info.txt", true);
+											writerd.write(RID + "\n");
+											writerd.close();
+											
+											if(!founddd) {	
+												FileWriter fw = new FileWriter(System.getProperty("user.dir") + "\\Storage\\" + router.RID + "\\" + line.split(" ")[2] + ".txt", true); //the true will append the new data
+												fw.write(ip + ":" + port + "\t" + RID + "\t" + nextHop + "\t" + hops + "\n");//appends the string to the file
+												fw.close();
+											}
 										}
 									} 
 								} else if(line.split(" ")[1].equals("ENDTABLE")) {
@@ -351,6 +372,7 @@ public class InputHandler extends Thread {
 		} catch (IOException e) {
 			//e.printStackTrace();	//Connection reset
 			System.out.println("Host is down.");
+			e.printStackTrace();
 		}	
 	}
 	

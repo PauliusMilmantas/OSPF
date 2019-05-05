@@ -60,6 +60,8 @@ public class Table {
 	 */
 	public void readTable(String path) {
 		
+		ArrayList<String> lines = new ArrayList<>();
+		
 		File file = new File(path);
 		if(file.exists()) {
 			try {
@@ -68,19 +70,23 @@ public class Table {
 				String line = reader.readLine();
 				
 				while(line != null) {
-					String[] rt = line.split("\t");
-					ipList.add(rt[0].split(":")[0]);
-					ports.add(Integer.parseInt(rt[0].split(":")[1]));
-					RIDs.add(rt[1]);
-					nextHop.add(rt[2]);
-					hops.add(Integer.parseInt(rt[3]));
-					
-					line = reader.readLine();
+					if(!lines.contains(line)) {
+						lines.add(line);
+						
+						String[] rt = line.split("\t");
+						ipList.add(rt[0].split(":")[0]);
+						ports.add(Integer.parseInt(rt[0].split(":")[1]));
+						RIDs.add(rt[1]);
+						nextHop.add(rt[2]);
+						hops.add(Integer.parseInt(rt[3]));
+						
+						line = reader.readLine();
+					}
 				}
 				
 				reader.close();
 			} catch (FileNotFoundException e) {
-				if(Router.DEBUG) System.out.println("Using empty routing tableff");
+				if(Router.DEBUG) System.out.println("[DEBUG] Using empty routing tableff");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
